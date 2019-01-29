@@ -29,8 +29,9 @@ To exit the virtualenv type `ctrl+d` or type `deactivate`
 
 ```bash
 # Set configuration variables
-export FLASK_APP='lamby'
-export FLASK_ENV='development'
+export FLASK_APP=lamby
+export FLASK_ENV=development
+export LAMBY_CONFIG=config/development.cfg
 
 # Run the application
 flask run
