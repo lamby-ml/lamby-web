@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 autopep8 = "*"
+pytest-flask = "*"
+pytest-xdist = "*"
 
 [packages]
 flask = "*"
