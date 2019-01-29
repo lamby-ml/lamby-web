@@ -1,4 +1,4 @@
-from lamby.db import db
+from lamby.database import db
 
 
 class User(db.Model):

@@ -2,8 +2,8 @@
 max-line-length = 79
 exclude =
   .git,
-  migrations,
-  templates,
-  static,
-  __pycache__,
+  */migrations/*,
+  */templates/*,
+  */static/*,
+  */__pycache__/*,
 

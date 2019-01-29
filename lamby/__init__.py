@@ -19,17 +19,25 @@ def configure_application(app):
 
     dotenv_path = Path('.') / ('%s.env' % env)
     load_dotenv(dotenv_path=dotenv_path)
-    app.config.from_envvar('LAMBY_CONFIG')
+
+    if env == 'development':
+        app.config.from_object('lamby.config.DevelopmentConfig')
+    elif env == 'testing':
+        app.config.from_object('lamby.config.TestingConfig')
+    elif env == 'production':
+        app.config.from_object('lamby.config.ProductionConfig')
+    else:
+        app.config.from_object('lamby.config.Config')
 
     return app
 
 
 def connect_database(app):
-    from lamby.db import db
+    from lamby.database import db
     from lamby.models.user import User  # NOQA: F401
 
     db.init_app(app)
-    Migrate(app, db)
+    Migrate(app, db, directory='lamby/database/migrations')
 
     return app
 
