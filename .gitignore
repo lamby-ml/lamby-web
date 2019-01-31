@@ -107,4 +107,5 @@ venv.bak/
 .vscode/
 
 # database
+migrations/
 *.db

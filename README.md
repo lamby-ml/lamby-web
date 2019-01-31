@@ -32,8 +32,10 @@ To exit the virtualenv type `ctrl+d` or type `deactivate`
 export FLASK_APP=lamby
 export FLASK_ENV=development
 
-# Initialize the database (only if this is first time running)
-flask db migrate && flask db upgrade
+# Initialize the database
+flask db init  # Only need to do this once
+flask db migrate
+flask db upgrade
 
 # Run the application
 flask run
