@@ -8,12 +8,15 @@ flake8 = "*"
 autopep8 = "*"
 pytest-flask = "*"
 pytest-xdist = "*"
+isort = "*"
 
 [packages]
 flask = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+flask-login = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"

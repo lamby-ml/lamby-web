@@ -1,0 +1,23 @@
+{% extends "helpers/base.jinja" %}
+
+{% block title %}
+{% if is_signup %}
+    Signup
+{% else %}
+    Login
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
+    {% set projects = dummy_projects %}
+    {%- for project in projects %}
+        <div>
+            <div class="uk-card uk-card-hover uk-card-body">
+                <h3 class="uk-card-title">{{ project.name }} </h3>
+                <p>{{ project.description }}</p>
+            </div>
+        </div>
+    {%- endfor %}
+</div>
+{% endblock %}

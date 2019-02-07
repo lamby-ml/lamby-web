@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify
 
-
 greet_blueprint = Blueprint('greet', __name__, url_prefix='/greet')
 
 

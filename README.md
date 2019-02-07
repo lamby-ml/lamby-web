@@ -81,4 +81,9 @@ pytest
 flask db upgrade
 ```
 
+```bash
+# If you run into any issues, just nuke your database and start over.
+rm -rf lamby/database/migrations lamby/database/dev.db lamby/database/prod.db
+```
+
 For more information read the [Flask-Migrate Docs](https://flask-migrate.readthedocs.io/en/latest/).

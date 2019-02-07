@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <title>Lamby - {% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/uikit.min.css') }}" />
+
+    <script src="{{ url_for('static', filename='js/uikit.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uikit-icons.min.js') }}"></script>
+    {% endblock %}
+</head>
+
+<body>
+    {# Navbar #}
+    {% block navbar %}
+    <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+        {# Logo #}
+        <div class="uk-navbar-left">
+            <a class="uk-navbar-item uk-logo" href="{{ url_for('profile.index') }}">
+                <img src="{{ url_for('static', filename='img/lamby.svg') }}" width=45 height=45>
+            </a>
+        </div>
+
+        {# Navlinks #}
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                {% set navlinks = anonymous_navlinks %}
+                {% if current_user.is_authenticated %}
+                    {% set navlinks = authenticated_navlinks %}
+                {% endif %}
+                {%- for navlink in navlinks %}
+                    {% if url_for(navlink.endpoint) != url_for(request.endpoint) %}
+                        <li><a href="{{ url_for(navlink.endpoint) }}">{{ navlink.name }}</a></li>
+                    {% endif %}
+                {%- endfor %}
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
+
+    {# Main Content #}
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {# Flashed Messages #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="uk-container-small uk-align-center uk-alert-{{ category }}" uk-alert>
+        <a id="flash-close" class="uk-alert-close" uk-close></a>
+        <p>{{ message }}</p>
+    </div>
+
+    <script type="text/javascript">
+        const closeAlert = function () {
+            document.getElementById('flash-close').click();
+        }
+        setTimeout(closeAlert, 1000 * 3);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {# Footer #}
+    {% block footer %}
+    {% endblock %}
+</body>
+</html>

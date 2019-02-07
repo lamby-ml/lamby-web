@@ -1,7 +1,12 @@
-{% extends "base.jinja" %}
+{% extends "helpers/base.jinja" %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-Hello, World!
+{% if current_user.is_authenticated %}
+    Hello, {{ current_user.email }}!
+{% else %}
+    Hello, Anon!
+{% endif %}
 {% endblock %}
+
