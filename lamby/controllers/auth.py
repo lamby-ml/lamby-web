@@ -48,7 +48,7 @@ def login():
             flash('Invalid Credentials!', category='danger')
             return redirect(url_for('auth.login'))
 
-        login_user(user, remember=True)
+        login_user(user, remember=form.remember_me.data)
         return redirect(url_for('profile.index'))
 
     return render_template('auth.jinja', is_signup=False, form=form)
