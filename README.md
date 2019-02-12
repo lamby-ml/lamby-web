@@ -61,14 +61,16 @@ autopep8 --recursive --in-place .
 ### Running tests
 
 ```bash
-# Set envinronment to test (don't forget to set it back after)
+# Quickly run tests (temporarily sets FLASK_ENV to testing for the current command)
 FLASK_ENV=testing pytest
 
-# Run unit tests
-pytest
+# Run verbose unit tests in testing environment (don't forget to change FLASK_ENV when done)
+export FLASK_ENV=testing
+pytest -v
+
 
 # Run unit tests on `n` cores (n = 4 here)
-pytest -n 4
+FLASK_ENV=testing pytest -v -n 4
 ```
 
 ### Updating the database models
