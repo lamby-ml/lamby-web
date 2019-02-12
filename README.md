@@ -61,6 +61,9 @@ autopep8 --recursive --in-place .
 ### Running tests
 
 ```bash
+# Set envinronment to test (don't forget to set it back after)
+FLASK_ENV=testing pytest
+
 # Run unit tests
 pytest
 
