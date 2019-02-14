@@ -1,21 +1,20 @@
 from sqlalchemy import exc
 
 from lamby.models.user import User
-from lamby.database import db
 
 
-def test_create_user(app):
+def test_create_user(test_db):
     user = User(email='test@test.com', password='password')
-    db.session.add(user)
-    db.session.commit()
+    test_db.session.add(user)
+    test_db.session.commit()
 
     assert User.query.filter_by(email='test@test.com').first() is not None
 
     try:
         user_clone = User(email='test@test.com', password='password')
-        db.session.add(user_clone)
-        db.session.commit()
+        test_db.session.add(user_clone)
+        test_db.session.commit()
     except exc.IntegrityError:
-        pass
+        pass  # Should catch this exception
     except Exception:
         assert True is False

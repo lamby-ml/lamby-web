@@ -22,4 +22,5 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
+    SERVER_NAME = 'test.org'
     TESTING = True
