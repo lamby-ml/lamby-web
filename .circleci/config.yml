@@ -15,6 +15,8 @@ jobs:
             pipenv install --dev
       - run:
           command: |
-            pipenv run FLASK_ENV=testing pytest -v
+            export FLASK_ENV=testing
+            export FLASK_APP=lamby
+            pipenv run pytest -v
       - store_test_results:
           path: test-results        
