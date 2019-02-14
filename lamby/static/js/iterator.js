@@ -14,6 +14,6 @@ NodeIterator.prototype.next = function() {
 NodeIterator.prototype.applyToAll = function(cb) {
   while (this.hasNext()) {
     const node = this.next();
-    cb(node);
+    cb(node, this.index);
   }
 };

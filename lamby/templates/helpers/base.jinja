@@ -57,11 +57,18 @@
     {% if messages %}
     {% for category, message in messages %}
     <div class="uk-container-small uk-align-center uk-alert-{{ category }}" uk-alert>
-        <a id="flash-close" class="uk-alert-close" uk-close></a>
+        <a id="flash-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
         <p>{{ message }}</p>
     </div>
-    <script src="{{ url_for('static', filename='js/flash.js') }}"></script>
     {% endfor %}
+
+    <script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+    <script type="text/javascript">
+        const messages = new NodeIterator('flash-close');
+        messages.applyToAll(message => {
+            setTimeout(() => message.click(), 1000 * 3);
+        });
+    </script>
     {% endif %}
     {% endwith %}
 
