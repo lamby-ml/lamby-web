@@ -15,6 +15,6 @@ jobs:
             pipenv install --dev
       - run:
           command: |
-            FLASK_ENV=testing pytest -v
+            pipenv run FLASK_ENV=testing pytest -v
       - store_test_results:
           path: test-results        
