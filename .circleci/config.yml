@@ -1,0 +1,20 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/lamby-web
+    docker:
+      - image: circleci/python:3.7.2  # primary container for the build job
+    steps:
+      - checkout
+      - run: # install dependencies
+          command: |
+            sudo apt-get -y update
+            sudo apt-get -y upgrade
+            sudo apt-get install -y sqlite3 libsqlite3-dev
+            sudo pip install pipenv
+            pipenv install --dev
+      - run:
+          command: |
+            FLASK_ENV=testing pytest -v
+      - store_test_results:
+          path: test-results        
