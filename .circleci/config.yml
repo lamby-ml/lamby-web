@@ -18,5 +18,6 @@ jobs:
             export FLASK_ENV=testing
             export FLASK_APP=lamby
             pipenv run pytest -v
+            pipenv run flake8 .
       - store_test_results:
           path: test-results        
