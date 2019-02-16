@@ -19,12 +19,34 @@
     </h3>
 </div>
 
+<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+
+{% macro render_form_errors(form) -%}
+    {%- for field, value in form.data.items() %}
+        {%- for error in form[field].errors %}
+        <div class="uk-container-small uk-align-center uk-alert-danger" uk-alert>
+            <a id="{{ field }}-error-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
+            <p>{{ error }}</p>
+        </div>
+        {%- endfor %}
+
+        <script type="text/javascript">
+            const {{ field }}Errors = new NodeIterator('{{ field }}-error-close');
+            {{ field }}Errors.applyToAll(error => {
+                setTimeout(() => error.click(), 1000 * 5);
+            });
+        </script>
+    {%- endfor %}
+
+{%- endmacro %}
+
 <form method="post" action="" novalidate>
-    {{ form.hidden_tag() }}
-    {{ form.email(class_="uk-input uk-width-1-2 uk-align-center", placeholder="Email Address") }}
-    {{ form.password(class_="uk-input uk-width-1-2 uk-align-center", placeholder="Password") }}
-    <div align=center>
-        <label> {{ form.remember_me( class ="uk-checkbox", type="checkbox")}}
+    <div align="center">
+        {{ form.hidden_tag() }}
+        {{ form.email(class_="uk-input uk-width-1-2 uk-align-center", placeholder="Email Address") }}
+        {{ form.password(class_="uk-input uk-width-1-2 uk-align-center", placeholder="Password") }}
+        <label>
+            {{ form.remember_me( class ="uk-checkbox", type="checkbox")}}
             Remember me?
         </label>
     </div>
@@ -38,4 +60,8 @@
         <h6 class="uk-align-center">Don't have an account? Register <a href="{{ url_for('auth.signup') }}">here</a>!</h6>
     {% endif %}
 </div>
+
+{{ render_form_errors(form) }}
+
 {% endblock %}
+

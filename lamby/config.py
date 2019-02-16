@@ -22,5 +22,6 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
+    WTF_CSRF_ENABLED = False
     SERVER_NAME = 'test.org'
     TESTING = True
