@@ -19,27 +19,6 @@
     </h3>
 </div>
 
-<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
-
-{% macro render_form_errors(form) -%}
-    {%- for field, value in form.data.items() %}
-        {%- for error in form[field].errors %}
-        <div class="uk-container-small uk-align-center uk-alert-danger" uk-alert>
-            <a id="{{ field }}-error-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
-            <p>{{ error }}</p>
-        </div>
-        {%- endfor %}
-
-        <script type="text/javascript">
-            const {{ field }}Errors = new NodeIterator('{{ field }}-error-close');
-            {{ field }}Errors.applyToAll(error => {
-                setTimeout(() => error.click(), 1000 * 5);
-            });
-        </script>
-    {%- endfor %}
-
-{%- endmacro %}
-
 <form method="post" action="" novalidate>
     <div align="center">
         {{ form.hidden_tag() }}
@@ -61,7 +40,23 @@
     {% endif %}
 </div>
 
-{{ render_form_errors(form) }}
+<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+
+{%- for field, value in form.data.items() %}
+    {%- for error in form[field].errors %}
+    <div class="uk-container-small uk-align-center uk-alert-danger" uk-alert>
+        <a id="{{ field }}-error-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
+        <p>{{ error }}</p>
+    </div>
+    {%- endfor %}
+
+    <script type="text/javascript">
+        const {{ field }}Errors = new NodeIterator('{{ field }}-error-close');
+        {{ field }}Errors.applyToAll(error => {
+            setTimeout(() => error.click(), 1000 * 5);
+        });
+    </script>
+{%- endfor %}
 
 {% endblock %}
 

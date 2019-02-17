@@ -1,3 +1,6 @@
+import random
+
+
 class Navlink(object):
     def __init__(self, name, endpoint):
         self.name = name
@@ -39,12 +42,59 @@ class Project(object):
         return self.description
 
 
-def initialize_projects(app, current_user):
-    projects = [
-        Project('Project Name', 'Description'),
-        Project('Project Name', 'Description'),
-        Project('Project Name', 'Description'),
-        Project('Project Name', 'Description'),
-        Project('Project Name', 'Description')
+def get_dummy_projects():
+    dummy_project_names = [
+        'WasteIgnite',
+        'Balln',
+        'KnowHeckHere',
+        'Topstr',
+        'SmartRot',
+        'MessageFuse',
+        'Machine.ly',
+        'StripMetrics',
+        'EquityFloat',
+        'Automatoc',
+        'mtools',
+        'SureXML',
+        'CodePTD',
+        'freecode',
+        'openm',
+        'desklabs',
+        'DocBot',
+        'flexml',
+        'itools',
+        'strexml',
+        'zcloud',
+        'opench',
+        'dataspec',
+        'coinhy.pe',
+        'heatmaps',
+        'visualyser',
+        'smartm',
+        'mSOURCE',
+        'datamp',
+        'plexml'
+        'mlabs',
+        'shareredy',
+        'lexml',
+        'vocoder',
+        'logml',
+        'blockchain.md',
+        'batchip',
+        'lauchyoursaas',
+        'gtron',
+        'teachip',
+        'ReadyCrypt',
+        'BuxMachine',
+        'ctools',
+        'cworks',
+        'clogix',
+        'lmonlabs',
+        'MachinePath',
+        'idexio'
     ]
-    app.jinja_env.globals['dummy_projects'] = projects
+
+    return [
+        Project(name, 'Description')
+        for name in random.sample(dummy_project_names, random.randint(5, 10))
+    ]

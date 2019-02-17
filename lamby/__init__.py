@@ -89,9 +89,7 @@ def register_bluprints(app):
 def configure_ui(app):
     from flask_login import current_user
     from lamby.util.ui import initialize_navlinks
-    from lamby.util.ui import initialize_projects
 
     initialize_navlinks(app, current_user)
-    initialize_projects(app, current_user)
 
     return app

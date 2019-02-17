@@ -4,7 +4,6 @@
 
 {% block content %}
 <div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
-    {% set projects = dummy_projects %}
     {%- for project in projects %}
         <div>
             <div id="project-card-{{ loop.index }}" class="uk-card uk-card-body">
