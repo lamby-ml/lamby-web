@@ -3,10 +3,11 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+<div class="uk-text-center uk-text-large uk-text-lead">My Projects</div>
 <div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
     {%- for project in projects %}
         <div>
-            <div id="project-card-{{ loop.index }}" class="uk-card uk-card-body">
+            <div id="project-card-{{ loop.index }}" class="uk-card uk-card-body uk-text-center">
                 <h3 class="uk-card-title">{{ project.name }}</h3>
                 <p>{{ project.description }}</p>
             </div>
