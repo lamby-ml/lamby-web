@@ -37,7 +37,7 @@
                     {% set navlinks = authenticated_navlinks %}
                 {% endif %}
                 {%- for navlink in navlinks %}
-                    {% if url_for(navlink.endpoint) != url_for(request.endpoint) %}
+                    {% if navlink.endpoint != request.endpoint %}
                         <li><a href="{{ url_for(navlink.endpoint) }}">{{ navlink.name }}</a></li>
                     {% endif %}
                 {%- endfor %}
