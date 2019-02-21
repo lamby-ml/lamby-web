@@ -17,7 +17,13 @@
     <li>{{ render_projects(projects) }}</li>
     <li>
         <ul>
-            <li>EMAIL: {{ current_user.email }}</li>
+            <form>
+                <h4>Email</h4>
+                <input class="uk-input" type="email" value="{{ current_user.email }}" disabled>
+
+                <h4>User ID</h4>
+                <input class="uk-input" type="text" value="{{ current_user.id }}" disabled>
+            </form>
         </ul>
     </li>
 </ul>
