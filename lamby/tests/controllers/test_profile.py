@@ -32,3 +32,22 @@ def test_profile_is_blocked_for_unauthenticated_user(test_client, test_db):
     res = test_client.get('/profile', follow_redirects=True)
 
     assert 'Please log in to access this page.' in get_response_data(res)
+
+
+def test_profile_more_info(test_client, test_db):
+    user = User(email='test@test.com')
+    user.set_password('password')
+    test_db.session.add(user)
+    test_db.session.commit()
+
+    # Should successfully authenticate the user
+    test_client.post('/login', data=dict(
+        email='test@test.com',
+        password='password'
+    ), follow_redirects=True)
+
+    # Should go to profile page
+    res = test_client.get('/profile', follow_redirects=True)
+
+    assert 'value="test@test.com"' in get_response_data(res)
+    assert 'value="1"' in get_response_data(res)
