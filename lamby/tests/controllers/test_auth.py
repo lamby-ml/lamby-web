@@ -3,7 +3,7 @@ from lamby.tests.util import get_response_data_without_whitespace, \
     get_response_data
 
 
-def test_signup_creates_user(test_client, test_db, scope='module'):
+def test_signup_creates_user(test_client, test_db):
     # Should successfully create a new account
     res = test_client.post('/signup', data=dict(
         email='test@test.com',
@@ -14,7 +14,19 @@ def test_signup_creates_user(test_client, test_db, scope='module'):
     assert User.query.filter_by(email='test@test.com').first() is not None
 
 
-def test_signup_requires_unique_email(test_client, test_db, scope='module'):
+def test_signup_hashes_password(test_client, test_db):
+    # Should successfully create a new account
+    test_client.post('/signup', data=dict(
+        email='test@test.com',
+        password='password',
+    ), follow_redirects=True)
+
+    user = User.query.filter_by(email='test@test.com').first()
+    assert user.password != 'password'
+    assert user.check_password('password')
+
+
+def test_signup_requires_unique_email(test_client, test_db):
     user = User(email='test@test.com')
     user.set_password('password')
     test_db.session.add(user)
