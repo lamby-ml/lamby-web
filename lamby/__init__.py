@@ -43,6 +43,8 @@ def connect_database(app):
 
     from lamby.database import db
     from lamby.models.user import User  # NOQA: F401
+    from lamby.models.project import Project  # NOQA: F401
+    from lamby.models.projects import projects  # NOQA: F401
 
     db.init_app(app)
     Migrate(app, db, directory='lamby/database/migrations')
