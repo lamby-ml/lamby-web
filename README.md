@@ -32,8 +32,11 @@ To exit the virtualenv type `ctrl+d` or type `deactivate`
 export FLASK_APP=lamby
 export FLASK_ENV=development
 
+export MINIO_ACCESS_KEY=<minio_access_key>
+export MINIO_SECRET_KEY=<minio_secret_key>
+
 # Initialize the database
-flask db init  # Only need to do this once
+flask db init
 flask db migrate
 flask db upgrade
 
@@ -58,16 +61,20 @@ flake8 .
 autopep8 --recursive --in-place .
 ```
 
+```bash
+# Sort file imports
+isort -rc --atomic .
+```
+
 ### Running tests
 
 ```bash
 # Quickly run tests (temporarily sets FLASK_ENV to testing for the current command)
-FLASK_ENV=testing pytest
+FLASK_ENV=testing pytest -v
 
 # Run verbose unit tests in testing environment (don't forget to change FLASK_ENV when done)
 export FLASK_ENV=testing
 pytest -v
-
 
 # Run unit tests on `n` cores (n = 4 here)
 FLASK_ENV=testing pytest -v -n 4

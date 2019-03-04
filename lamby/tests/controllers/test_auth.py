@@ -1,6 +1,6 @@
 from lamby.models.user import User
-from lamby.tests.util import get_response_data_without_whitespace, \
-    get_response_data
+from lamby.tests.util import (get_response_data,
+                              get_response_data_without_whitespace)
 
 
 def test_signup_creates_user(test_client, test_db):

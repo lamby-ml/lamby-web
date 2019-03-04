@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, BooleanField
-from wtforms import validators
+from wtforms import (BooleanField, PasswordField, StringField, SubmitField,
+                     validators)
 
 
 class AuthForm(FlaskForm):

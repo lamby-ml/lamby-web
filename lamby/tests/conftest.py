@@ -2,6 +2,7 @@ import pytest
 
 from lamby import create_app
 from lamby.database import db
+from lamby.filestore import fs
 
 
 @pytest.fixture
@@ -32,3 +33,9 @@ def test_db(test_client, scope='module'):
     yield db
 
     db.drop_all()
+
+
+@pytest.fixture
+def test_fs(test_client, scope='module'):
+    yield fs
+    fs.clear_testing_bucket()

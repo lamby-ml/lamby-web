@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
+
 from lamby.util.ui import get_dummy_projects
 
 profile_blueprint = Blueprint('profile', __name__)

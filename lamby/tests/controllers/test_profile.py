@@ -1,6 +1,6 @@
 from lamby.models.user import User
-from lamby.tests.util import get_response_data_without_whitespace, \
-    get_response_data
+from lamby.tests.util import (get_response_data,
+                              get_response_data_without_whitespace)
 
 
 def test_profile_is_accessible_to_authenticated_user(test_client, test_db):

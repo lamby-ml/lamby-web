@@ -9,6 +9,7 @@ def create_app():
     app = Flask(__name__)
     app = configure_application(app)
     app = connect_database(app)
+    app = initialize_filestore(app)
     app = initialize_sessions(app)
     app = register_bluprints(app)
     app = configure_ui(app)
@@ -48,6 +49,14 @@ def connect_database(app):
 
     db.init_app(app)
     Migrate(app, db, directory='lamby/database/migrations')
+
+    return app
+
+
+def initialize_filestore(app):
+    from lamby.filestore import fs
+
+    fs.init_app(app)
 
     return app
 
