@@ -40,15 +40,15 @@ def configure_application(app):
 
 
 def connect_database(app):
-    from flask_migrate import Migrate
-
     from lamby.database import db
     from lamby.models.user import User  # NOQA: F401
     from lamby.models.project import Project  # NOQA: F401
     from lamby.models.projects import projects  # NOQA: F401
 
     db.init_app(app)
-    Migrate(app, db, directory='lamby/database/migrations')
+
+    with app.app_context():
+        db.create_all()
 
     return app
 

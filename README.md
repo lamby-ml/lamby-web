@@ -35,11 +35,6 @@ export FLASK_ENV=development
 export MINIO_ACCESS_KEY=<minio_access_key>
 export MINIO_SECRET_KEY=<minio_secret_key>
 
-# Initialize the database
-flask db init
-flask db migrate
-flask db upgrade
-
 # Run the application
 flask run
 ```
@@ -80,22 +75,16 @@ pytest -v
 FLASK_ENV=testing pytest -v -n 4
 ```
 
-### Updating the database models
+## Docker
 
 ```bash
-# After making a change to a model, update the database migrations
-flask db migrate
+# Build the image
+docker build -t lamby:<tag> .
 
-# Make sure the tests still pass
-pytest
-
-# Commit the database migrations
-flask db upgrade
+# Run the image in a container
+docker run --name lamby-web -p 5000:5000 -d \
+    -e MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY \
+    -e MINIO_SECRET_KEY=$MINIO_SECRET_KEY \
+    -e SQLALCHEMY_DATABASE_URI=$SQL_ALCHEMY_DATABASE_URI \
+    lambyml/lamby-web:latest
 ```
-
-```bash
-# If you run into any issues, just nuke your database and start over.
-rm -rf lamby/database/migrations lamby/database/dev.db lamby/database/prod.db
-```
-
-For more information read the [Flask-Migrate Docs](https://flask-migrate.readthedocs.io/en/latest/).

@@ -10,7 +10,6 @@ class Config(object):
 
     SECRET_KEY = '9f032adf045bb72391818a6ded254c75'
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     MINIO_SERVER_URI = 'http://134.209.32.130:9000'
@@ -19,7 +18,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(DB_DIR, 'prod.db')
+    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 
 
 class DevelopmentConfig(Config):
@@ -28,6 +27,7 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
-    WTF_CSRF_ENABLED = False
-    SERVER_NAME = 'test.org'
     TESTING = True
+    SERVER_NAME = 'test.org'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    WTF_CSRF_ENABLED = False

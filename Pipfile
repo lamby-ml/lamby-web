@@ -14,11 +14,11 @@ isort = "*"
 flask = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
-flask-migrate = "*"
 flask-login = "*"
 flask-wtf = "*"
 sqlalchemy = "*"
 boto3 = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"

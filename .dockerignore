@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+.env
+.circleci
+*/bin
+*/obj
+README.md
+LICENSE
+.vscode
+
+lamby/database/*.db

@@ -3,9 +3,9 @@ jobs:
   build:
     working_directory: ~/lamby-web
     docker:
-      - image: circleci/python:3.7.2  # primary container for the build job
-        environmen:
-          PIPENV_VENV_IN_PROJECT: true
+      - image: circleci/python:3.7.2 # primary container for the build job
+        environment:
+          PIPENV_VENV_IN_PROJECT: false
     steps:
       - checkout
       - run: sudo chown -R circleci:circleci /usr/local/bin
@@ -32,4 +32,4 @@ jobs:
             pipenv run pytest -v
       - run:
           command: |
-            pipenv run flake8 .       
+            pipenv run flake8 .
