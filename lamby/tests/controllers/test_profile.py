@@ -50,4 +50,3 @@ def test_profile_more_info(test_client, test_db):
     res = test_client.get('/profile', follow_redirects=True)
 
     assert 'value="test@test.com"' in get_response_data(res)
-    assert 'value="1"' in get_response_data(res)

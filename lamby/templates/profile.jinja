@@ -1,44 +1,52 @@
 {% extends "helpers/base.jinja" %}
 
+{% from 'macros/projects.jinja' import render_projects with context %}
+{% from 'macros/forms.jinja' import render_form_errors with context %}
+
 {% block title %}Profile{% endblock %}
 
 {% block content %}
 
 <h2 class="uk-text-center">Profile</h2>
 
-{% from 'macros/projects.jinja' import render_projects with context %}
-
 <ul class="uk-tab" uk-switcher>
-    <li><a href="#">Projects</a></li>
-    <li><a href="#">My Info</a></li>
+    {% if focused_tab == 'projects' %}
+        <li class="uk-active"><a href="#">Projects</a></li>
+        <li><a href="#">My Info</a></li>
+    {% else %}
+        <li><a href="#">Projects</a></li>
+        <li class="uk-active"><a href="#">My Info</a></li>
+    {% endif %}
 </ul>
 
 <ul class="uk-switcher uk-margin">
-    <li>{{ render_projects(projects) }}</li>
+    {# Projects Tab #}
+    <li>
+        {{ render_projects(projects) }}
+    </li>
+
+    {# My Info Tab #}
     <li>
         <ul>
-            <form>
-                <h4>Email</h4>
-                <input class="uk-input" type="email" value="{{ current_user.email }}" disabled>
+            <div align="center">
+                <form method="post" action="" novalidate>
+                    {{ my_info_form.hidden_tag() }}
 
-                <h4>User ID</h4>
-                <input class="uk-input" type="text" value="{{ current_user.id }}" disabled>
-            </form>
+                    <div align="left">
+                        <h4>Email</h4>
+                        {{ my_info_form.email(class_="uk-input uk-width-1-2 uk-align", type="text", value=current_user.email, disabled=true) }}
+
+                        <h4>Change Password</h4>
+                        {{ my_info_form.old_password(class_="uk-input uk-width-1-2 uk-align", type="password", placeholder="Old Password") }}
+                        {{ my_info_form.new_password(class_="uk-input uk-width-1-2 uk-align", type="password", placeholder="New Password") }}
+                        {{ my_info_form.submit(class_="uk-button uk-button-primary uk-width-1-5 uk-margin-small-bottom uk-align") }}
+                    </div>
+                </form>
+            </div>
         </ul>
     </li>
 </ul>
 
-<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
-<script type="text/javascript">
-    const projects = new NodeIterator('project-card');
-    projects.applyToAll(project => {
-        project.addEventListener('mouseover', function() {
-            this.classList.add('uk-card-default');
-        });
-        project.addEventListener('mouseout', function() {
-            this.classList.remove('uk-card-default');
-        });
-    });
-</script>
+{{ render_form_errors(my_info_form) }}
 
 {% endblock %}

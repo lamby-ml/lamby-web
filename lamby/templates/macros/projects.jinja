@@ -9,4 +9,17 @@
         </div>
     {%- endfor %}
 </div>
+
+<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+<script type="text/javascript">
+    const projects = new NodeIterator('project-card');
+    projects.applyToAll(project => {
+        project.addEventListener('mouseover', function() {
+            this.classList.add('uk-card-default');
+        });
+        project.addEventListener('mouseout', function() {
+            this.classList.remove('uk-card-default');
+        });
+    });
+</script>
 {%- endmacro %}

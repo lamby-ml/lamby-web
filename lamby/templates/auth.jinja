@@ -1,5 +1,7 @@
 {% extends "helpers/base.jinja" %}
 
+{% from 'macros/forms.jinja' import render_form_errors with context %}
+
 {% block title %}
 {% if is_signup %}
     Signup
@@ -12,7 +14,7 @@
 <div align="center">
     <h3>
     {% if is_signup %}
-        Signup
+        Sign Up
     {% else %}
         Login
     {% endif %}
@@ -40,23 +42,7 @@
     {% endif %}
 </div>
 
-<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
-
-{%- for field, value in form.data.items() %}
-    {%- for error in form[field].errors %}
-    <div class="uk-container-small uk-align-center uk-alert-danger" uk-alert>
-        <a id="{{ field }}-error-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
-        <p>{{ error }}</p>
-    </div>
-    {%- endfor %}
-
-    <script type="text/javascript">
-        const {{ field }}Errors = new NodeIterator('{{ field }}-error-close');
-        {{ field }}Errors.applyToAll(error => {
-            setTimeout(() => error.click(), 1000 * 5);
-        });
-    </script>
-{%- endfor %}
+{{ render_form_errors(form) }}
 
 {% endblock %}
 
