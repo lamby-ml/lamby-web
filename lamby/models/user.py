@@ -10,7 +10,11 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
-    projects = db.relationship('Project', secondary=projects, lazy='subquery',
+    owned_projects = db.relationship('Project', backref='owner', lazy=True)
+
+    projects = db.relationship('Project',
+                               secondary=projects,
+                               lazy='subquery',
                                backref=db.backref('members', lazy=True))
 
     def get_id(self):
@@ -21,6 +25,9 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def get_all_projects(self):
+        return list(set(self.projects + self.owned_projects))
 
     def __str__(self):
         return '<User email=%s />' % self.email
