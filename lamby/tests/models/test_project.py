@@ -1,4 +1,5 @@
 from sqlalchemy import exc
+
 from lamby.models.project import Project
 
 

@@ -1,7 +1,7 @@
 from sqlalchemy import exc
 
-from lamby.models.user import User
 from lamby.models.project import Project
+from lamby.models.user import User
 
 
 def test_user_creation(test_db):
@@ -62,3 +62,18 @@ def test_user_can_access_owned_projects(test_db, test_users):
 
     assert Project.query.filter_by(id=project.id).first() in \
         user.owned_projects
+
+
+def test_user_generate_new_api_key(test_db, test_users):
+    user = test_users[0]
+
+    assert user.api_key is None
+
+    user.generate_new_api_key()
+
+    assert user.api_key is not None
+
+    old_key = user.api_key
+    user.generate_new_api_key()
+
+    assert user.api_key != old_key

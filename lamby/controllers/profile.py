@@ -1,32 +1,53 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from lamby.database import db
+from lamby.forms.myapikey import MyApiKeyForm
 from lamby.forms.myinfo import MyInfoForm
 from lamby.util.ui import get_dummy_projects
 
 profile_blueprint = Blueprint('profile', __name__)
 
 
-@profile_blueprint.route('/', methods=['GET', 'POST'])
+@profile_blueprint.route('/')
 @login_required
 def index():
+    return render_template('profile.jinja',
+                           projects=get_dummy_projects(),
+                           my_info_form=MyInfoForm(),
+                           my_api_key_form=MyApiKeyForm(),
+                           focused_tab='projects')
+
+
+@profile_blueprint.route('/myinfo', methods=['POST'])
+@login_required
+def handle_my_info_form():
     my_info_form = MyInfoForm()
 
     if my_info_form.validate_on_submit():
         current_user.set_password(my_info_form.new_password.data)
         db.session.commit()
         flash('The change to your account was successful.', category='success')
-        return render_template('profile.jinja',
-                               projects=get_dummy_projects(),
-                               my_info_form=my_info_form,
-                               focused_tab='projects')
-    elif request.method == 'POST':
-        # Attempted to change password, but form was invalid
-        return render_template('profile.jinja',
-                               projects=get_dummy_projects(),
-                               my_info_form=my_info_form,
-                               focused_tab='info')
+        return redirect(url_for('profile.index'))
 
-    return render_template('profile.jinja', projects=get_dummy_projects(),
-                           my_info_form=my_info_form, focused_tab='projects')
+    return render_template('profile.jinja',
+                           projects=get_dummy_projects(),
+                           my_info_form=my_info_form,
+                           my_api_key_form=MyApiKeyForm(),
+                           focused_tab='info')
+
+
+@profile_blueprint.route('/apikey', methods=['POST'])
+@login_required
+def handle_my_api_key_form():
+    my_api_key_form = MyApiKeyForm()
+
+    if my_api_key_form.validate_on_submit():
+        current_user.generate_new_api_key()
+        db.session.commit()
+        flash('A new API Key has been generated.', category='success')
+        return redirect(url_for('profile.index'))
+
+    # Attempted to generate a new api key, but something went wrong
+    flash('Something went wrong! Please try again later.', category='danger')
+    return redirect(url_for('profile.index'))

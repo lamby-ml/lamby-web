@@ -246,3 +246,23 @@ def test_logout_ends_session(test_client, test_db):
     res = test_client.get('/profile', follow_redirects=True)
 
     assert 'Please log in to access this page.' in get_response_data(res)
+
+
+def test_user_change_password(test_client, test_db):
+    user = User(email='test@test.com')
+    user.set_password('password')
+
+    test_db.session.add(user)
+    test_db.session.commit()
+
+    # Should login the newly created user
+    test_client.post('/login', data=dict(
+        email='test@test.com',
+        password='password'
+    ), follow_redirects=True)
+
+    assert user.check_password('password')
+
+    user.set_password('new_password')
+
+    assert user.check_password('new_password')

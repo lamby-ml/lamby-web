@@ -1,3 +1,5 @@
+import secrets
+
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,6 +19,8 @@ class User(UserMixin, db.Model):
                                lazy='subquery',
                                backref=db.backref('members', lazy=True))
 
+    api_key = db.Column(db.String(120))
+
     def get_id(self):
         return str(self.id)
 
@@ -28,6 +32,9 @@ class User(UserMixin, db.Model):
 
     def get_all_projects(self):
         return list(set(self.projects + self.owned_projects))
+
+    def generate_new_api_key(self):
+        self.api_key = secrets.token_urlsafe(32)
 
     def __str__(self):
         return '<User email=%s />' % self.email
