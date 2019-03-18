@@ -109,3 +109,4 @@ venv.bak/
 # database
 migrations/
 *.db
+*.env

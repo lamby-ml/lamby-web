@@ -1,10 +1,10 @@
-from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, validators
 
+from lamby.forms.base import BaseForm
 from lamby.forms.validators import PasswordIsCorrect
 
 
-class MyInfoForm(FlaskForm):
+class MyInfoForm(BaseForm):
     email = StringField('Email')
     old_password = PasswordField(
         'Password',

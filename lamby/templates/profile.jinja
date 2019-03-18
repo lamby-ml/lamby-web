@@ -1,7 +1,6 @@
 {% extends "helpers/base.jinja" %}
 
 {% from 'macros/projects.jinja' import render_projects with context %}
-{% from 'macros/forms.jinja' import render_form_errors with context %}
 
 {% block title %}Profile{% endblock %}
 
@@ -57,9 +56,6 @@
                     </form>
                 </div>
             </div>
-
-            {{ render_form_errors(my_api_key_form) }}
-            {{ render_form_errors(my_info_form) }}
         </ul>
     </li>
 </ul>

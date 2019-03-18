@@ -1,9 +1,11 @@
-from flask_wtf import FlaskForm
+# from flask_wtf import FlaskForm
 from wtforms import (BooleanField, PasswordField, StringField, SubmitField,
                      validators)
 
+from lamby.forms.base import BaseForm
 
-class AuthForm(FlaskForm):
+
+class AuthForm(BaseForm):
     email = StringField(
         'Email',
         validators=[

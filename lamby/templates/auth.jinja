@@ -1,7 +1,5 @@
 {% extends "helpers/base.jinja" %}
 
-{% from 'macros/forms.jinja' import render_form_errors with context %}
-
 {% block title %}
 {% if is_signup %}
     Signup
@@ -41,8 +39,6 @@
         <h6 class="uk-align-center">Don't have an account? Register <a href="{{ url_for('auth.signup') }}">here</a>!</h6>
     {% endif %}
 </div>
-
-{{ render_form_errors(form) }}
 
 {% endblock %}
 
