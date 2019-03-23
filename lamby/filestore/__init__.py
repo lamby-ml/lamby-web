@@ -1,5 +1,4 @@
 import os
-import sys
 
 import boto3
 from botocore.client import Config
@@ -38,19 +37,20 @@ class Filestore(object):
             region_name='us-east-1'
         )
         self.create_default_bucket()
-        self.default_bucket = self.client.Bucket(os.getenv('FLASK_ENV'))
+        # The name of the bucket is just the current environment (ie. testing)
+        self.default_bucket_name = os.getenv('FLASK_ENV')
+        self.default_bucket = self.client.Bucket(self.default_bucket_name)
 
     def create_default_bucket(self):
         try:
             self.client.create_bucket(Bucket=os.getenv('FLASK_ENV'))
         except ClientError as e:
             error_code = e.response['Error']['Code']
-            if error_code == 'BucketAlreadyOwnedByYou' or \
-                    error_code == 'BucketAlreadyExists':
-                pass
+            if error_code != 'BucketAlreadyOwnedByYou' and \
+                    error_code != 'BucketAlreadyExists':
+                raise
         except Exception as e:
-            sys.stderr.write('Unexpected Error: %s' % str(e))
-            exit(2)
+            raise Exception('Unexpected Error: %s' % str(e))
 
     def clear_testing_bucket(self):
         try:
@@ -60,11 +60,10 @@ class Filestore(object):
             })
         except ClientError as e:
             error_code = e.response['Error']['Code']
-            if error_code == 'NoSuchBucket' or error_code == 'NoSuchKey':
-                pass
+            if error_code != 'NoSuchBucket' and error_code != 'NoSuchKey':
+                raise
         except Exception as e:
-            sys.stderr.write('Unexpected Error: %s' % str(e))
-            exit(2)
+            raise Exception('Unexpected Error: %s' % str(e))
 
 
 fs = Filestore()
