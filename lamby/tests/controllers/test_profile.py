@@ -50,3 +50,18 @@ def test_profile_more_info(test_client, test_db):
     res = test_client.get('/profile', follow_redirects=True)
 
     assert 'value="test@test.com"' in get_response_data(res)
+
+
+def test_account_delete(test_client, test_db):
+    user = User(email='test@test.com')
+    user.set_password('password')
+    test_db.session.add(user)
+    test_db.session.commit()
+
+    # Should successfully delete the user
+    test_client.post('/deleteaccount', data=dict(), follow_redirects=True)
+
+    # Should redirect to login page
+    res = test_client.get('/profile', follow_redirects=True)
+
+    assert 'Please log in to access this page.' in get_response_data(res)

@@ -36,5 +36,8 @@ class User(UserMixin, db.Model):
     def generate_new_api_key(self):
         self.api_key = secrets.token_urlsafe(32)
 
+    def delete_account(self):
+        self.query.filter(User.id == self.id).delete()
+
     def __str__(self):
         return '<User email=%s />' % self.email

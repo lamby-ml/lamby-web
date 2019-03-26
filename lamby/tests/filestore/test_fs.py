@@ -1,7 +1,7 @@
 import os
 
-from lamby.filestore.util import get_object_from_key, get_object_body, \
-    download_file_from_key
+from lamby.filestore.util import (download_file_from_key, get_object_body,
+                                  get_object_from_key)
 
 
 def test_fs_connection(test_fs):
@@ -10,7 +10,7 @@ def test_fs_connection(test_fs):
 
 def test_get_object_from_key_with_valid_key(test_fs):
     bucket = test_fs.default_bucket
-    bucket.put_object(Key='test-obj', Body=b'Hello, World!')
+    bucket.put_object(Key='test-obj', Body='Hello, World!')
 
     get_object_from_key('test-obj')
 
