@@ -44,6 +44,9 @@ def connect_database(app):
     from lamby.models.user import User  # NOQA: F401
     from lamby.models.project import Project  # NOQA: F401
     from lamby.models.projects import projects  # NOQA: F401
+    from lamby.models.commit import Commit  # NOQA: F401
+    from lamby.models.commit_attrs import CommitAttrs  # NOQA: F401
+    from lamby.models.meta import ProjectMeta  # NOQA: F401
 
     db.init_app(app)
 
