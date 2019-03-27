@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from lamby import create_app
@@ -28,6 +30,9 @@ def test_db(test_client, scope='module'):
     Setup an in-memory database for each test, then tear it down after each
     test is complete.
     """
+    if os.getenv('FLASK_ENV') != 'testing':
+        raise Exception('Please set FLASK_ENV=testing before running tests.')
+
     db.create_all()
     db.session.commit()
 

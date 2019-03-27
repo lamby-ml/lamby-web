@@ -1,5 +1,9 @@
 from lamby.database import db
 
+
+"""
+This table represents a many-to-many relationship between users and projects.
+"""
 projects = db.Table(
     'projects',
     db.Column('user_id',

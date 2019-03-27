@@ -1,13 +1,36 @@
 from lamby.database import db
 
 
-class ProjectMeta(db.Model):
-    project_id = db.Column(db.Integer, db.ForeignKey(
-        'project.id'), primary_key=True)
-    filename = db.Column(db.String(120), primary_key=True)
-    head = db.Column(db.String(64), db.ForeignKey('commit.id'))
-    latest = db.Column(db.String(64), db.ForeignKey('commit.id'))
+class Meta(db.Model):
+    # -------------------------------------------------------------------------
+    # Meta
+    # -------------------------------------------------------------------------
+    __tablename__ = 'meta'
 
-    def __str__(self):
-        return '<ProjectMetadata file=%s head=%s latest=%s/>' % \
-            (self.filename, self.head, self.latest)
+    # -------------------------------------------------------------------------
+    # Fields
+    # -------------------------------------------------------------------------
+
+    # PROJECT_ID -- (PrimaryKey, ForeignKey to Project)
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey('project.id'),
+        primary_key=True
+    )
+
+    # FILENAME  -- (PrimaryKey) -- Name of the model for the project
+    filename = db.Column(db.String(64), nullable=False, primary_key=True)
+
+    # LATEST -- (ForeignKey to Commit) -- Latest Commit id for the model
+    latest = db.Column(
+        db.String(64),
+        db.ForeignKey('commit.id'),
+        nullable=False
+    )
+
+    # HEAD -- (ForeignKey to Commit) -- CommitID for the head commit
+    head = db.Column(
+        db.String(64),
+        db.ForeignKey('commit.id'),
+        nullable=False
+    )
