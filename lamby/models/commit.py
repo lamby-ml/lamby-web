@@ -1,3 +1,5 @@
+import hashlib
+
 from lamby.database import db
 
 
@@ -43,4 +45,22 @@ class Commit(db.Model):
     attributes = db.relationship('CommitAttr', backref='commit', lazy=True)
 
     def __str__(self):
-        return f'<Commit id={self.id} message={self.message} />'
+        return f'<Commit id={self.id} message={self.message} ' + \
+            f'filename={self.filename}/>'
+
+
+"""
+Helper functions to help generate dummy commit id's
+"""
+
+
+def get_dummy_hash():
+    return hashlib.sha256(get_random_string(64).encode('utf-8')).hexdigest()
+
+
+def get_random_string(n):
+    import random
+    import string
+
+    return ''.join([random.choice(string.ascii_letters + string.digits)
+                    for _ in range(n)])

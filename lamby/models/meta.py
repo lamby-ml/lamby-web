@@ -34,3 +34,22 @@ class Meta(db.Model):
         db.ForeignKey('commit.id'),
         nullable=False
     )
+
+    def __str__(self):
+        return f'<Meta filename={self.filename} latest={self.latest}' + \
+            f' head={self.head} />'
+
+    @staticmethod
+    def get_filenames(project_id):
+        return [meta.filename for meta in
+                Meta.query.filter_by(project_id=project_id)]
+
+    @staticmethod
+    def get_head_commits(project_id):
+        return [meta.head for meta in
+                Meta.query.filter_by(project_id=project_id)]
+
+    @staticmethod
+    def get_latest_commits(project_id):
+        return [meta.latest for meta in
+                Meta.query.filter_by(project_id=project_id)]
