@@ -31,15 +31,19 @@ def initialize_navlinks(app, current_user):
 
 
 class Project(object):
-    def __init__(self, name, description):
+    def __init__(self, name, description, id):
         self.name = name
         self.description = description
+        self.id = id
 
     def get_name(self):
         return self.name
 
     def get_description(self):
         return self.description
+
+    def get_id(self):
+        return self.id
 
 
 def get_dummy_projects():
@@ -93,8 +97,9 @@ def get_dummy_projects():
         'MachinePath',
         'idexio'
     ]
-
-    return [
-        Project(name, 'Description')
-        for name in random.sample(dummy_project_names, random.randint(5, 10))
-    ]
+    id = 0
+    projects = []
+    for name in random.sample(dummy_project_names, random.randint(5, 10)):
+        projects.append(Project(name, 'Description', id))
+        id += 1
+    return projects

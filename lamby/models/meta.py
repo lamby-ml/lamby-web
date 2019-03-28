@@ -24,14 +24,14 @@ class Meta(db.Model):
     # LATEST -- (ForeignKey to Commit) -- Latest Commit id for the model
     latest = db.Column(
         db.String(64),
-        db.ForeignKey('commit.id'),
+        db.ForeignKey('commits.id'),
         nullable=False
     )
 
     # HEAD -- (ForeignKey to Commit) -- CommitID for the head commit
     head = db.Column(
         db.String(64),
-        db.ForeignKey('commit.id'),
+        db.ForeignKey('commits.id'),
         nullable=False
     )
 

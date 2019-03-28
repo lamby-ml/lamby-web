@@ -5,8 +5,8 @@ import os
 import platform
 import sys
 import threading
-import webbrowser
 import time
+import webbrowser
 
 from .__version__ import __version__
 

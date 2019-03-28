@@ -1,13 +1,11 @@
 
-from .server import start
-from .server import stop
-from .server import wait
-from .server import serve
-from .__version__ import __version__
-
 import argparse
-import sys
 import os
+import sys
+
+from .__version__ import __version__
+from .server import serve, start, stop, wait
+
 
 def main():
     parser = argparse.ArgumentParser(description='Viewer for neural network, deep learning and machine learning models.')

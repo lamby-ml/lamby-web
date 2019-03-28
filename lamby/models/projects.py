@@ -1,6 +1,5 @@
 from lamby.database import db
 
-
 """
 This table represents a many-to-many relationship between users and projects.
 """

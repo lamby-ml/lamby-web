@@ -1,0 +1,36 @@
+{%  macro render_table(project_id) %}
+<div class="uk-container">
+    <input id="search_input" type="text" class="uk-width-1-4 uk-input uk-align-right" style="margin-bottom: 0px" placeholder="Search">
+    <table id="model_data_table" class="uk-table uk-table-divider" style="width:100%">
+        <thead>
+            <tr>
+                <th>Model Name</th>
+                <th>Commit Message</th>
+                <th>Last Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+        {%- for model in project %}
+            <tr>
+                <td><a href="{{model.link}}">{{ model.filename }}</a></td>
+                <td>{{ model.message }}</td>
+                <td class="uk-text-right">{{ model.timestamp }}</td>
+            </tr>
+        {%- endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+$(document).ready(function() {
+    var table = $('#model_data_table').DataTable({
+        paging : false,
+        info : false,
+        dom : 't'
+    });
+    $('#search_input').on( 'keyup', function () {
+        table.search($(this).val()).draw() ;
+    });
+} );
+
+</script>
+{%- endmacro %}
