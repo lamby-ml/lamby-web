@@ -23,6 +23,9 @@ class Project(db.Model):
     # DESCRIPTION -- Optional description of the project
     description = db.Column(db.String(240))
 
+    # READ_ME -- Project information stored in markdown format
+    read_me = db.Column(db.Text, default='# README')
+
     # -------------------------------------------------------------------------
     # Relationships
     # -------------------------------------------------------------------------

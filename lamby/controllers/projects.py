@@ -8,7 +8,12 @@ from lamby.models.meta import Meta
 from lamby.models.project import Project
 from lamby.models.user import User
 from lamby.util.ui import get_dummy_projects
+from lamby.forms.readme import ReadMeForm
+from lamby.database import db
 
+import mistune
+
+markdown = mistune.Markdown()
 projects_blueprint = Blueprint('projects', __name__)
 
 
@@ -33,7 +38,6 @@ def user_projects(user_id):
 
 @projects_blueprint.route('/pid=<int:project_id>')
 def project_models(project_id):
-
     project = Project.query.filter_by(id=project_id).first()
     # Throw 404 if no project
     if project is None:
@@ -54,9 +58,32 @@ def project_models(project_id):
             'link': '/models/' + str(project.id) + '/' + str(c.id)
         } for c in latest_commits
     ]
+
+    md = markdown(project.read_me)
     return render_template(
         'project.jinja',
         project=model_display,
-        project_title=project.title
+        project_title=project.title,
+        project_id=project.id,
+        readme_edit_form=ReadMeForm(markdown=u''+project.read_me),
+        read_me=project.read_me,
+        mark_up=md
     )
     return render_template('models.jinja', project="")
+
+
+@projects_blueprint.route('/edit_readme/<int:project_id>', methods=['POST'])
+def edit_readme_form(project_id):
+    edit_readme_form = ReadMeForm()
+
+    if edit_readme_form.validate_on_submit():
+        project = Project.query.get(project_id)
+        project.read_me = edit_readme_form.markdown.data
+        db.session.commit()
+        flash('Successfully updated README.', category='success')
+        return redirect(url_for('projects.project_models',
+                                project_id=project.id))
+
+    flash('Unable to update README.', category='failure')
+    return redirect(url_for('projects.project_models',
+                            project_id=edit_readme_form.project_id.data))

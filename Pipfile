@@ -7,7 +7,6 @@ verify_ssl = true
 flake8 = "*"
 autopep8 = "*"
 pytest-flask = "*"
-pytest-xdist = "*"
 isort = "*"
 
 [packages]
@@ -20,6 +19,7 @@ sqlalchemy = "*"
 boto3 = "*"
 psycopg2-binary = "*"
 psycopg2 = "*"
+mistune = "*"
 
 [requires]
 python_version = "3.7"

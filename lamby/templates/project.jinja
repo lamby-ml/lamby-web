@@ -1,13 +1,41 @@
 {% extends "helpers/base.jinja" %}
-
 {% from 'macros/model_table.jinja' import render_table with context %}
 
 {% block title %}Test Project{% endblock %}
 
 {% block content %}
 
-<h2 class="uk-text-center">{{project_title}}</h2>
+<h2 class="uk-text-center">{{ project_title }}</h2>
 
 {{ render_table(project) }}
 
+<div class="uk-container">
+    <div class="uk-panel" style="border: 1px solid #ddd; padding: 10px;">
+    {{ mark_up }}
+    </div>
+    
+    <!-- This is a button toggling the modal -->
+    <button
+        class="uk-button uk-button-default uk-margin-small-right uk-align-right uk-margin-top"
+        type="button"
+        uk-toggle="target: #modal-readme"
+    >
+        Edit README
+    </button>
+</div>
+
+<!-- This is the modal -->
+<div id="modal-readme" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Edit README</h2>
+    <form method="post" action="{{ url_for('projects.edit_readme_form', project_id=project_id) }}">
+        {{ readme_edit_form.hidden_tag() }}
+        {{ readme_edit_form.markdown(class_="uk-align uk-textarea uk-form-medium",style="height: 500px;") }}
+        {{ readme_edit_form.submit(class_="uk-button uk-button-default uk-margin-small-bottom uk-align-right")}}
+        <button class="uk-button uk-button-default uk-modal-close uk-align-right" type="button">
+            Cancel
+        </button>
+    </form>
+  </div>
+</div>
 {% endblock %}
