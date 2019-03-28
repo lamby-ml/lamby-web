@@ -1,4 +1,5 @@
 from lamby.database import db
+from lamby.models.commit import Commit
 
 
 class Meta(db.Model):
@@ -46,10 +47,10 @@ class Meta(db.Model):
 
     @staticmethod
     def get_head_commits(project_id):
-        return [meta.head for meta in
+        return [Commit.query.get(meta.head) for meta in
                 Meta.query.filter_by(project_id=project_id)]
 
     @staticmethod
     def get_latest_commits(project_id):
-        return [meta.latest for meta in
+        return [Commit.query.get(meta.latest) for meta in
                 Meta.query.filter_by(project_id=project_id)]

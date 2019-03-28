@@ -48,6 +48,14 @@ class Commit(db.Model):
         return f'<Commit id={self.id} message={self.message} ' + \
             f'filename={self.filename}/>'
 
+    def to_dict(self):
+        return {
+            'message': self.message,
+            'timestamp': self.timestamp,
+            'author': self.author,
+            'filename': self.filename,
+        }
+
 
 """
 Helper functions to help generate dummy commit id's

@@ -25,7 +25,7 @@ def test_meta_get_head_commits(test_db, test_projects, test_commits):
     assert len(head_commits) == len(all_filenames)
 
     for commit in head_commits:
-        assert Commit.query.get(commit) is not None
+        assert commit is not None
 
 
 def test_meta_get_latest_commits(test_db, test_projects, test_commits):
@@ -39,4 +39,4 @@ def test_meta_get_latest_commits(test_db, test_projects, test_commits):
     ).order_by(Commit.timestamp.desc()).limit(len(latest_meta_commits))
 
     for commit in latest_meta_commits:
-        assert Commit.query.get(commit) in latest_commits
+        assert commit in latest_commits
