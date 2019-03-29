@@ -81,11 +81,11 @@ def edit_readme_form(project_id):
         db.session.commit()
         flash('Successfully updated README.', category='success')
         return redirect(url_for('projects.project_models',
-                                project_id=edit_readme_form.project_id.data))
+                                project_id=project_id))
 
     flash('Unable to update README.', category='failure')
     return redirect(url_for('projects.project_models',
-                            project_id=edit_readme_form.project_id.data))
+                            project_id=project_id))
 
 
 @projects_blueprint.route('/deleteproject/<int:project_id>', methods=['POST'])

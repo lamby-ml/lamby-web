@@ -9,5 +9,5 @@ model_blueprint = Blueprint('model', __name__)
 def index(pid, mid):
     return render_template(
         'netron.jinja',
-        object_link=fs.get_link(str(id) + '/' + str(mid))
+        object_link=fs.get_link(str(pid) + '/' + str(mid))
     )

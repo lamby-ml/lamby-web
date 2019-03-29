@@ -283,7 +283,9 @@ host.BrowserHost = class {
         request.onload = () => {
             if (request.status == 200) {
                 var buffer = new Uint8Array(request.response);
-                var context = new BrowserContext(this, url, identifier, buffer);
+                // Unzip Buffer
+                buffer = pako.inflate(buffer);
+                var context = new BrowserContext(this, url, identifier + '.onnx', buffer);
                 this._view.openContext(context, (err, model) => {
                     if (err) {
                         this.exception(err, false);
