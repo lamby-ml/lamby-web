@@ -1,0 +1,7 @@
+{% macro render_navlinks(navlinks) %}
+    {%- for (title, url) in navlinks %}
+        {% if url != request.endpoint %}
+            <li><a href="{{ url_for(url) }}">{{ title }}</a></li>
+        {% endif %}
+    {%- endfor %}
+{%- endmacro %}

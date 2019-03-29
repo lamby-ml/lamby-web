@@ -22,6 +22,25 @@
     {# Projects Tab #}
     <li>
         {{ render_projects(projects) }}
+        <!-- Button to create new project -->
+        <div class="uk-position-bottom-right" style="margin-right:50px; margin-bottom:50px">
+            <button class="uk-button uk-button-default uk-button-large" type="button" uk-toggle="target: #new-project-modal">New Project</button>
+        </div>
+
+        <!-- Project Creation Modal -->
+        <div id="new-project-modal" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body">
+                <h2 class="uk-modal-title">New Project</h2>
+                <form method="post" action="{{ url_for('profile.create_new_project') }}" novalidate>
+                    {{ new_project_form.hidden_tag() }}
+                    {{ new_project_form.project_title(class_="uk-input uk-align", type="text", placeholder="Project Name") }}
+                    {{ new_project_form.project_desc(class_="uk-input uk-align", type="text", placeholder="Project Description") }}
+                    <p class="uk-text-right">
+                        {{ new_project_form.submit(class_="uk-button uk-button-primary uk-width-1-2 uk-margin-small-bottom uk-align") }}
+                    </p>
+                </form>
+            </div>
+        </div>
     </li>
 
     {# My Info Tab #}

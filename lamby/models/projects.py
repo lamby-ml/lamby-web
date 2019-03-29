@@ -11,6 +11,6 @@ projects = db.Table(
               primary_key=True),
     db.Column('project_id',
               db.Integer,
-              db.ForeignKey('project.id'),
+              db.ForeignKey('project.id', ondelete='CASCADE'),
               primary_key=True),
 )

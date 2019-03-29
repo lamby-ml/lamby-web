@@ -30,25 +30,29 @@
     {# Navbar #}
     {% block navbar %}
     <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
-        {# Logo #}
         <div class="uk-navbar-left">
             <a class="uk-navbar-item uk-logo" href="{{ url_for('profile.index') }}">
-                <img src="{{ url_for('static', filename='img/lamby.svg') }}" width=45 height=45>
+                <img src="{{ url_for('static', filename='img/lamby.svg') }}" width=45 height=45 />
             </a>
         </div>
 
         {# Navlinks #}
         <div class="uk-navbar-right">
             <ul class="uk-navbar-nav">
-                {% set navlinks = anonymous_navlinks %}
+                {% from 'macros/navlinks.jinja' import render_navlinks with context %}
                 {% if current_user.is_authenticated %}
-                    {% set navlinks = authenticated_navlinks %}
+                    {{ render_navlinks([
+                        ('HOME', 'home.index'),
+                        ('PROFILE', 'profile.index'),
+                        ('LOGOUT', 'auth.logout'),
+                    ]) }}
+                {% else %}
+                    {{ render_navlinks([
+                        ('HOME', 'home.index'),
+                        ('SIGNUP', 'auth.signup'),
+                        ('LOGIN', 'auth.login')
+                    ]) }}
                 {% endif %}
-                {%- for navlink in navlinks %}
-                    {% if navlink.endpoint != request.endpoint %}
-                        <li><a href="{{ url_for(navlink.endpoint) }}">{{ navlink.name }}</a></li>
-                    {% endif %}
-                {%- endfor %}
             </ul>
         </div>
     </nav>

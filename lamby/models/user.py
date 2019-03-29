@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     # -------------------------------------------------------------------------
 
     # ID -- (PrimaryKey)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     # EMAIL -- Unique email of the user
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -36,7 +36,8 @@ class User(UserMixin, db.Model):
     # OWNED_PROJECTS (USER one-to-many PROJECT)
     # -----------------------------------------
     # Represents the projects that the user owns/created
-    owned_projects = db.relationship('Project', backref='owner', lazy=True)
+    owned_projects = db.relationship(
+        'Project', backref='owner', lazy=True, cascade='all,delete-orphan')
 
     # PROJECTS (User many-to-many Project)
     # ------------------------------------
@@ -44,7 +45,8 @@ class User(UserMixin, db.Model):
     projects = db.relationship('Project',
                                secondary=projects,
                                lazy='subquery',
-                               backref=db.backref('members', lazy=True))
+                               backref=db.backref('members', lazy=True),
+                               cascade='all,delete')
 
     def get_id(self):
         return str(self.id)
@@ -57,9 +59,6 @@ class User(UserMixin, db.Model):
 
     def generate_new_api_key(self):
         self.api_key = secrets.token_urlsafe(32)
-
-    def delete_account(self):
-        self.query.filter(User.id == self.id).delete()
 
     def __str__(self):
         return f'<User email={self.email} />'

@@ -15,7 +15,7 @@ class Meta(db.Model):
     # PROJECT_ID -- (PrimaryKey, ForeignKey to Project)
     project_id = db.Column(
         db.Integer,
-        db.ForeignKey('project.id'),
+        db.ForeignKey('project.id', ondelete='CASCADE'),
         primary_key=True
     )
 
@@ -25,14 +25,14 @@ class Meta(db.Model):
     # LATEST -- (ForeignKey to Commit) -- Latest Commit id for the model
     latest = db.Column(
         db.String(64),
-        db.ForeignKey('commits.id'),
+        db.ForeignKey('commits.id', ondelete='CASCADE'),
         nullable=False
     )
 
     # HEAD -- (ForeignKey to Commit) -- CommitID for the head commit
     head = db.Column(
         db.String(64),
-        db.ForeignKey('commits.id'),
+        db.ForeignKey('commits.id', ondelete='CASCADE'),
         nullable=False
     )
 

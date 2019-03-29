@@ -12,7 +12,6 @@ def create_app():
     app = initialize_filestore(app)
     app = initialize_sessions(app)
     app = register_bluprints(app)
-    app = configure_ui(app)
 
     return app
 
@@ -104,14 +103,5 @@ def register_bluprints(app):
     app.register_blueprint(greet_blueprint, url_prefix='/api')
     app.register_blueprint(auth_api_blueprint, url_prefix='/api/auth')
     app.register_blueprint(projects_api_blueprint, url_prefix='/api/projects')
-
-    return app
-
-
-def configure_ui(app):
-    from flask_login import current_user
-    from lamby.util.ui import initialize_navlinks
-
-    initialize_navlinks(app, current_user)
 
     return app

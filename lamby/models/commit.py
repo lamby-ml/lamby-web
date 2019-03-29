@@ -19,7 +19,7 @@ class Commit(db.Model):
     # PROJECT_ID -- (ForeignKey to Project)
     project_id = db.Column(
         db.Integer,
-        db.ForeignKey('project.id'),
+        db.ForeignKey('project.id', ondelete='CASCADE'),
         nullable=False
     )
 

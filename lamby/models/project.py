@@ -15,7 +15,9 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Owner ID -- (ForeignKey to User)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    owner_id = db.Column(db.Integer,
+                         db.ForeignKey('user.id', ondelete='CASCADE'),
+                         nullable=False)
 
     # TITLE -- Title of the project
     title = db.Column(db.String(120), nullable=False)

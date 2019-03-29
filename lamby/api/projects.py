@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request
 
 from lamby.database import db
-from lamby.models.project import Project
-from lamby.models.meta import Meta
 from lamby.models.commit import Commit
-
+from lamby.models.meta import Meta
+from lamby.models.project import Project
 
 projects_api_blueprint = Blueprint('projects_api', __name__)
 
@@ -152,15 +151,15 @@ def push(project_id):
             db.session.add(meta)
         else:
             # Update the head commit for the given filename
-            meta.head = head
+            meta.head = head.id
 
             # Update the latest commit for the given filename
-            meta.latest = latest
+            meta.latest = latest.id
 
         try:
             db.session.commit()
         except Exception as e:
-            response['message'] = 'Failed to update meta for {filename}'
+            response['message'] = f'Failed to update meta for {filename}'
             response['error'] = str(e)
             return jsonify(response), 400
 

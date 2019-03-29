@@ -14,7 +14,7 @@ class CommitAttr(db.Model):
 
     commit_id = db.Column(
         db.String(64),
-        db.ForeignKey('commits.id'),
+        db.ForeignKey('commits.id', ondelete='CASCADE'),
         nullable=False
     )
 
