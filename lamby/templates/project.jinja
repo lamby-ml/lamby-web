@@ -1,29 +1,33 @@
-{% extends "helpers/base.jinja" %}
-{% from 'macros/model_table.jinja' import render_table with context %}
+{% extends 'helpers/base.jinja' %}
+{% from 'macros/model_table.jinja' import render_model_table with context %}
 
-{% block title %}Test Project{% endblock %}
+{% block title %}{{ project.title }}{% endblock %}
+
 
 {% block content %}
 
-<h2 class="uk-text-center">{{ project_title }} - {{ project_id }}</h2>
+<h2 class="uk-text-center">{{ project.title }}</h2>
 
-{{ render_table(project) }}
-<form method="post" action="{{ url_for('projects.handle_delete_project', project_id=project_id) }}" novalidate>
+{# Model Table #}
+{{ render_model_table(model_table_data) }}
+
+{# Show the delete project form if the current user owns the project #}
+{% if current_user.is_authenticated and project.owner_id == current_user.id %}
+<form method="post" action="{{ url_for('projects.handle_delete_project', project_id=project.id) }}" novalidate>
     <div class="uk-position-bottom-right" style="margin-right:50px; margin-bottom:50px">
         {{ delete_project_form.hidden_tag() }}
-        {% if current_user.is_authenticated and owner_id == current_user.id %}
-            {{ delete_project_form.submit(class_="uk-button uk-button-default uk-button-large" ) }}
-        {% endif %}
+        {{ delete_project_form.submit(class_="uk-button uk-button-danger uk-button-large" ) }}
     </div>
 </form>
+{% endif %}
 
 <div class="uk-container">
     <div class="uk-panel" style="border: 1px solid #ddd; padding: 10px;">
-    {{ mark_up }}
+      {{ formatted_readme }}
     </div>
 
-    <!-- This is a button toggling the README modal -->
-    {% if current_user.is_authenticated and owner_id == current_user.id %}
+    {# Enable README editing if the current user owns the project #}
+    {% if current_user.is_authenticated and project.owner_id == current_user.id %}
     <button
         class="uk-button uk-button-default uk-margin-small-right uk-align-right uk-margin-top"
         type="button"
@@ -34,14 +38,14 @@
     {% endif %}
 </div>
 
-<!-- This is the README modal -->
+{# README modal #}
 <div id="modal-readme" uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
     <h2 class="uk-modal-title">Edit README</h2>
-    <form method="post" action="{{ url_for('projects.edit_readme_form', project_id=project_id) }}">
-        {{ readme_edit_form.hidden_tag() }}
-        {{ readme_edit_form.markdown(class_="uk-align uk-textarea uk-form-medium",style="height: 500px;") }}
-        {{ readme_edit_form.submit(class_="uk-button uk-button-default uk-margin-small-bottom uk-align-right") }}
+    <form method="post" action="{{ url_for('projects.handle_edit_readme', project_id=project.id) }}">
+        {{ edit_readme_form.hidden_tag() }}
+        {{ edit_readme_form.markdown(class_="uk-align uk-textarea uk-form-medium", style="height: 500px;") }}
+        {{ edit_readme_form.submit(class_="uk-button uk-button-default uk-margin-small-bottom uk-align-right") }}
 
         <button class="uk-button uk-button-default uk-modal-close uk-align-right" type="button">
             Cancel

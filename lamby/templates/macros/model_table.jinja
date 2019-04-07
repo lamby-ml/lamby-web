@@ -1,4 +1,4 @@
-{%  macro render_table(project_id) %}
+{%  macro render_model_table(models) %}
 <div class="uk-container">
     <input id="search_input" type="text" class="uk-width-1-4 uk-input uk-align-right" style="margin-bottom: 0px" placeholder="Search">
     <table id="model_data_table" class="uk-table uk-table-divider" style="width:100%">
@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-        {%- for model in project %}
+        {%- for model in models %}
             <tr>
                 <td><a href="{{model.link}}">{{ model.filename }}</a></td>
                 <td>{{ model.message }}</td>
@@ -20,6 +20,7 @@
         </tbody>
     </table>
 </div>
+
 <script>
 $(document).ready(function() {
     var table = $('#model_data_table').DataTable({
@@ -27,10 +28,11 @@ $(document).ready(function() {
         info : false,
         dom : 't'
     });
-    $('#search_input').on( 'keyup', function () {
-        table.search($(this).val()).draw() ;
-    });
-} );
 
+    $('#search_input').on('keyup', function () {
+        table.search($(this).val()).draw();
+    });
+});
 </script>
+
 {%- endmacro %}

@@ -4,6 +4,16 @@ from lamby.forms.base import BaseForm
 from lamby.forms.validators import PasswordIsCorrect
 
 
+class DeleteAccountForm(BaseForm):
+    delete_account = StringField('Delete Account')
+    submit = SubmitField('Delete Account')
+
+
+class MyApiKeyForm(BaseForm):
+    api_key = StringField('API Key')
+    generate_new_key = SubmitField('Generate New Key')
+
+
 class MyInfoForm(BaseForm):
     email = StringField('Email')
     old_password = PasswordField(
@@ -28,3 +38,13 @@ class MyInfoForm(BaseForm):
         ],
     )
     submit = SubmitField('Change Password')
+
+
+class NewProjectForm(BaseForm):
+    project_title = StringField('Project Name', validators=[
+        validators.DataRequired(
+            'Project name cannot be blank.'
+        )
+    ],)
+    project_desc = StringField('Project Description')
+    submit = SubmitField('Create New Project')

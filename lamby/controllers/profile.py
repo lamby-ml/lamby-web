@@ -2,10 +2,8 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from lamby.database import db
-from lamby.forms.deleteaccount import DeleteAccountForm
-from lamby.forms.myapikey import MyApiKeyForm
-from lamby.forms.myinfo import MyInfoForm
-from lamby.forms.newproject import NewProjectForm
+from lamby.forms.profile import (DeleteAccountForm, MyApiKeyForm, MyInfoForm,
+                                 NewProjectForm)
 from lamby.models.project import Project
 from lamby.models.user import User
 
@@ -16,6 +14,7 @@ profile_blueprint = Blueprint('profile', __name__)
 @login_required
 def index():
     return render_template('profile.jinja',
+                           owner=current_user,
                            projects=current_user.projects,
                            my_info_form=MyInfoForm(),
                            my_api_key_form=MyApiKeyForm(),
@@ -24,7 +23,7 @@ def index():
                            focused_tab='projects')
 
 
-@profile_blueprint.route('/myinfo', methods=['POST'])
+@profile_blueprint.route('/my_info', methods=['POST'])
 @login_required
 def handle_my_info_form():
     my_info_form = MyInfoForm()
@@ -36,6 +35,7 @@ def handle_my_info_form():
         return redirect(url_for('profile.index'))
 
     return render_template('profile.jinja',
+                           owner=current_user,
                            projects=current_user.projects,
                            my_info_form=my_info_form,
                            my_api_key_form=MyApiKeyForm(),
@@ -44,7 +44,7 @@ def handle_my_info_form():
                            focused_tab='info')
 
 
-@profile_blueprint.route('/apikey', methods=['POST'])
+@profile_blueprint.route('/my_api_key', methods=['POST'])
 @login_required
 def handle_my_api_key_form():
     my_api_key_form = MyApiKeyForm()
@@ -60,7 +60,7 @@ def handle_my_api_key_form():
     return redirect(url_for('profile.index'))
 
 
-@profile_blueprint.route('/deleteaccount', methods=['POST'])
+@profile_blueprint.route('/delete_account', methods=['POST'])
 @login_required
 def handle_delete_account():
     delete_account_form = DeleteAccountForm()
@@ -72,12 +72,13 @@ def handle_delete_account():
         flash('You have successfully deleted your account!',
               category='success')
         return redirect(url_for('auth.login'))
+
     # Attempted to generate a new api key, but something went wrong
     flash('Something went wrong! Please try again later.', category='danger')
     return redirect(url_for('profile.index'))
 
 
-@profile_blueprint.route('/newproject', methods=['POST'])
+@profile_blueprint.route('/new_project', methods=['POST'])
 @login_required
 def create_new_project():
     new_project_form = NewProjectForm()
@@ -87,11 +88,14 @@ def create_new_project():
                           description=new_project_form.project_desc.data,
                           owner_id=current_user.id)
         current_user.projects.append(project)
+
         db.session.add(project)
         db.session.commit()
+
         flash('You have successfully created a new project!',
               category='success')
         return redirect(url_for('profile.index'))
+
     # Attempted to generate a new api key, but something went wrong
     flash('Something went wrong! Please try again later.', category='danger')
     return redirect(url_for('profile.index'))

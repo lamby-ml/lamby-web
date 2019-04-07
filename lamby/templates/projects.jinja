@@ -1,0 +1,13 @@
+{% extends 'helpers/base.jinja' %}
+
+{% from 'macros/projects.jinja' import render_projects with context %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h3 class="uk-text-center">Popular Projects</h3>
+  {{ render_projects(projects) }}
+</h3>
+{% endblock %}
+
+

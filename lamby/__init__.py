@@ -11,7 +11,7 @@ def create_app():
     app = connect_database(app)
     app = initialize_filestore(app)
     app = initialize_sessions(app)
-    app = register_bluprints(app)
+    app = register_blueprints(app)
 
     return app
 
@@ -79,16 +79,16 @@ def initialize_sessions(app):
     return app
 
 
-def register_bluprints(app):
+def register_blueprints(app):
     # Import controllers
     from lamby.controllers.home import home_blueprint
     from lamby.controllers.auth import auth_blueprint
     from lamby.controllers.profile import profile_blueprint
+    from lamby.controllers.users import users_blueprint
     from lamby.controllers.projects import projects_blueprint
-    from lamby.controllers.model import model_blueprint
+    from lamby.controllers.models import models_blueprint
 
     # Import API endpoints
-    from lamby.api.greet import greet_blueprint
     from lamby.api.auth import auth_api_blueprint
     from lamby.api.projects import projects_api_blueprint
 
@@ -96,11 +96,11 @@ def register_bluprints(app):
     app.register_blueprint(home_blueprint)
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(profile_blueprint, url_prefix='/profile')
+    app.register_blueprint(users_blueprint, url_prefix='/users')
     app.register_blueprint(projects_blueprint, url_prefix='/projects')
-    app.register_blueprint(model_blueprint, url_prefix='/models')
+    app.register_blueprint(models_blueprint, url_prefix='/models')
 
     # Register API endpoints (all api routes should be prefixed with /api)
-    app.register_blueprint(greet_blueprint, url_prefix='/api')
     app.register_blueprint(auth_api_blueprint, url_prefix='/api/auth')
     app.register_blueprint(projects_api_blueprint, url_prefix='/api/projects')
 
