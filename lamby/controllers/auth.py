@@ -37,8 +37,10 @@ def signup():
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        flash('Please logout if you would like to continue as a ' +
-              'different user.')
+        flash(
+            'Please logout if you would like to continue as a ' +
+            'different user.'
+        )
         return redirect(url_for('profile.index'))
 
     form = AuthForm()

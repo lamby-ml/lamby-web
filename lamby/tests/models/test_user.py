@@ -53,9 +53,11 @@ def test_user_check_password(test_db):
 def test_user_can_access_owned_projects(test_db, test_users):
     user = test_users[0]
 
-    project = Project(title='Test Project',
-                      description='A project for testing purposes',
-                      owner_id=test_users[0].id)
+    project = Project(
+        title='Test Project',
+        description='A project for testing purposes',
+        owner_id=test_users[0].id
+    )
 
     test_db.session.add(project)
     test_db.session.commit()

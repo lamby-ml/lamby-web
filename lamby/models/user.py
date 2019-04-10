@@ -37,16 +37,19 @@ class User(UserMixin, db.Model):
     # -----------------------------------------
     # Represents the projects that the user owns/created
     owned_projects = db.relationship(
-        'Project', backref='owner', lazy=True, cascade='all,delete-orphan')
+        'Project', backref='owner', lazy=True, cascade='all,delete-orphan'
+    )
 
     # PROJECTS (User many-to-many Project)
     # ------------------------------------
     # Represents the projects where the user is a member
-    projects = db.relationship('Project',
-                               secondary=projects,
-                               lazy='subquery',
-                               backref=db.backref('members', lazy=True),
-                               cascade='all,delete')
+    projects = db.relationship(
+        'Project',
+        secondary=projects,
+        lazy='subquery',
+        backref=db.backref('members', lazy=True),
+        cascade='all,delete'
+    )
 
     def get_id(self):
         return str(self.id)

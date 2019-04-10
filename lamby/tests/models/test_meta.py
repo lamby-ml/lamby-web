@@ -34,9 +34,9 @@ def test_meta_get_latest_commits(test_db, test_projects, test_commits):
     latest_meta_commits = Meta.get_latest_commits(project.id)
 
     # Fetch actual latest commits
-    latest_commits = Commit.query.filter_by(
-        project_id=project.id
-    ).order_by(Commit.timestamp.desc()).limit(len(latest_meta_commits))
+    latest_commits = Commit.query.filter_by(project_id=project.id).order_by(
+        Commit.timestamp.desc()
+    ).limit(len(latest_meta_commits))
 
     for commit in latest_meta_commits:
         assert commit in latest_commits

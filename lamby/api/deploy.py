@@ -23,13 +23,16 @@ def deploy_model(commit_id):
     object_link = fs.get_link(f'{commit.project_id}/{commit.id}')
 
     payload = {
-        'name': f'lamby-deploy-{commit.project_id}-{commit.id}',
-        'region': 'nyc3',
-        'size': 's-2vcpu-1gb',
-        'image': 'docker-18-04',
+        'name':
+            f'lamby-deploy-{commit.project_id}-{commit.id}',
+        'region':
+            'nyc3',
+        'size':
+            's-1vcpu-1gb',
+        'image':
+            'docker-18-04',
         'user_data':
-            f'''
-            # cloud-config
+            f'''# cloud-config
 
             runcmd:
               - docker pull lambyml/lamby-deploy:latest
@@ -50,7 +53,22 @@ def deploy_model(commit_id):
 
         json = req.json()
 
-        return jsonify(json), 200
+        droplet_id = json['droplet']['id']
+
+        # Fetch the droplet IP address
+        req = requests.get(
+            f'https://api.digitalocean.com/v2/droplets/{droplet_id}',
+            headers={
+                'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
+            },
+        )
+
+        json = req.json()
+
+        droplet_ip = json['droplet']['networks']['v4'][0]['ip_address']
+
+        response['message'] = f'Your API is up at {droplet_ip}'
+        return jsonify(response), 200
     except requests.exceptions.ConnectionError:
         response['message'] = 'Could not connect to API service.'
     except requests.exceptions.Timeout:

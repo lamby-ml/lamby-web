@@ -27,9 +27,8 @@ class MyInfoForm(BaseForm):
     new_password = PasswordField(
         'Password',
         validators=[
-            validators.DataRequired(
-                'A valid password is required to continue.'
-            ),
+            validators.
+            DataRequired('A valid password is required to continue.'),
             validators.Length(
                 min=5,
                 max=50,
@@ -41,10 +40,9 @@ class MyInfoForm(BaseForm):
 
 
 class NewProjectForm(BaseForm):
-    project_title = StringField('Project Name', validators=[
-        validators.DataRequired(
-            'Project name cannot be blank.'
-        )
-    ],)
+    project_title = StringField(
+        'Project Name',
+        validators=[validators.DataRequired('Project name cannot be blank.')],
+    )
     project_desc = StringField('Project Description')
     submit = SubmitField('Create New Project')

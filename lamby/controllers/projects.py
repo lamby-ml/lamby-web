@@ -25,24 +25,30 @@ def project(project_id):
     if project is None:
         abort(404)
 
-    model_table_data = [{
-        'filename': commit.filename,
-        'message': commit.message,
-        'timestamp': time.strftime('%Y-%m-%d',
-                                   time.localtime(commit.timestamp)),
-        'link': f'/models/{project.id}/{commit.id}'
-    } for commit in Meta.get_latest_commits(project.id)]
+    model_table_data = [
+        {
+            'filename':
+                commit.filename,
+            'message':
+                commit.message,
+            'timestamp':
+                time.strftime('%Y-%m-%d', time.localtime(commit.timestamp)),
+            'link':
+                f'/models/{project.id}/{commit.id}'
+        } for commit in Meta.get_latest_commits(project.id)
+    ]
 
     markdown = mistune.Markdown()
     formatted_readme = markdown(project.readme)
 
-    return render_template('project.jinja',
-                           project=project,
-                           model_table_data=model_table_data,
-                           formatted_readme=formatted_readme,
-                           edit_readme_form=EditReadmeForm(
-                               markdown=u'' + project.readme),
-                           delete_project_form=DeleteProjectForm())
+    return render_template(
+        'project.jinja',
+        project=project,
+        model_table_data=model_table_data,
+        formatted_readme=formatted_readme,
+        edit_readme_form=EditReadmeForm(markdown=u'' + project.readme),
+        delete_project_form=DeleteProjectForm()
+    )
 
 
 @projects_blueprint.route('/readme/<int:project_id>', methods=['POST'])

@@ -3,8 +3,6 @@ import os
 import boto3
 from botocore.client import Config
 from botocore.exceptions import ClientError
-
-
 """
 ###########
 Boto3 Notes
@@ -51,9 +49,14 @@ class Filestore(object):
         self.default_bucket = self.client.Bucket(self.default_bucket_name)
 
     def get_link(self, key):
-        return self.raw_client.generate_presigned_url('get_object', Params={
-            'Bucket': self.default_bucket_name,
-            'Key': key}, ExpiresIn=100)
+        return self.raw_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': self.default_bucket_name,
+                'Key': key
+            },
+            ExpiresIn=100
+        )
 
     def create_default_bucket(self):
         try:
@@ -69,9 +72,14 @@ class Filestore(object):
     def clear_testing_bucket(self):
         try:
             bucket = self.client.Bucket('testing')
-            bucket.delete_objects(Delete={
-                'Objects': [{'Key': obj.key} for obj in bucket.objects.all()]
-            })
+            bucket.delete_objects(
+                Delete={
+                    'Objects':
+                        [{
+                            'Key': obj.key
+                        } for obj in bucket.objects.all()]
+                }
+            )
         except ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code != 'NoSuchBucket' and error_code != 'NoSuchKey':
@@ -88,8 +96,9 @@ class Filestore(object):
         except ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code == 'NoSuchBucket':
-                raise Exception('Cannot find bucket named %s' %
-                                self.default_bucket_name)
+                raise Exception(
+                    'Cannot find bucket named %s' % self.default_bucket_name
+                )
 
             elif error_code == 'NoSuchKey':
                 raise Exception('Cannot find object with key %s\n' % key)

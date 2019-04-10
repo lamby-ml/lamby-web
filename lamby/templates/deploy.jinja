@@ -1,0 +1,12 @@
+{% extends 'helpers/base.jinja' %}
+
+{% block title %}Deploy{% endblock %}
+
+{% block content %}
+
+<script src="{{ url_for('static', filename='js/deploy.js') }}"></script>
+<script type="text/javascript">
+  createDroplet('{{ token }}', '{{ commit.project_id }}', '{{ commit.id }}', '{{ link }}');
+</script>
+
+{% endblock %}

@@ -1,4 +1,3 @@
-
 import codecs
 import errno
 import os
@@ -21,17 +20,18 @@ else:
     from BaseHTTPServer import BaseHTTPRequestHandler
     from SocketServer import ThreadingMixIn
 
+
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def handler(self):
         if not hasattr(self, 'mime_types_map'):
             self.mime_types_map = {
                 '.html': 'text/html',
-                '.js':   'text/javascript',
-                '.css':  'text/css',
-                '.png':  'image/png',
-                '.gif':  'image/gif',
-                '.jpg':  'image/jpeg',
-                '.ico':  'image/x-icon',
+                '.js': 'text/javascript',
+                '.css': 'text/css',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.jpg': 'image/jpeg',
+                '.ico': 'image/x-icon',
                 '.json': 'application/json',
                 '.pb': 'application/octet-stream',
                 '.ttf': 'font/truetype',
@@ -53,10 +53,16 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 meta = []
                 meta.append("<meta name='type' content='Python' />")
                 if __version__:
-                    meta.append("<meta name='version' content='" + __version__ + "' />")
+                    meta.append(
+                        "<meta name='version' content='" + __version__ + "' />"
+                    )
                 if self.file:
-                    meta.append("<meta name='file' content='/data/" + self.file + "' />")
-                with codecs.open(location + 'view-browser.html', mode="r", encoding="utf-8") as open_file:
+                    meta.append(
+                        "<meta name='file' content='/data/" + self.file + "' />"
+                    )
+                with codecs.open(
+                    location + 'view-browser.html', mode="r", encoding="utf-8"
+                ) as open_file:
                     buffer = open_file.read()
                 buffer = buffer.replace('<!-- meta -->', '\n'.join(meta))
                 buffer = buffer.encode('utf-8')
@@ -90,7 +96,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 else:
                     status_code = 404
         if self.verbose:
-            sys.stdout.write(str(status_code) + ' ' + self.command + ' ' + self.path + '\n')
+            sys.stdout.write(
+                str(status_code) + ' ' + self.command + ' ' + self.path + '\n'
+            )
         sys.stdout.flush()
         self.send_response(status_code)
         for key in headers:
@@ -102,14 +110,20 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             elif (status_code == 200 or status_code == 404) and buffer != None:
                 self.wfile.write(buffer)
         return
+
     def do_GET(self):
         self.handler()
+
     def do_HEAD(self):
         self.handler()
+
     def log_message(self, format, *args):
         return
 
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer): pass
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
 
 class HTTPServerThread(threading.Thread):
     def __init__(self, data, file, verbose, browse, port, host):
@@ -122,7 +136,9 @@ class HTTPServerThread(threading.Thread):
         self.server = ThreadedHTTPServer((host, port), HTTPRequestHandler)
         self.server.timeout = 0.25
         if file:
-            self.server.RequestHandlerClass.folder = os.path.dirname(file) if os.path.dirname(file) else '.'
+            self.server.RequestHandlerClass.folder = os.path.dirname(
+                file
+            ) if os.path.dirname(file) else '.'
             self.server.RequestHandlerClass.file = os.path.basename(file)
         else:
             self.server.RequestHandlerClass.folder = ''
@@ -137,14 +153,17 @@ class HTTPServerThread(threading.Thread):
         self.terminate_event.clear()
         self.stop_event.clear()
         if self.file:
-            sys.stdout.write("Serving '" + self.file + "' at " + self.url + "\n")
+            sys.stdout.write(
+                "Serving '" + self.file + "' at " + self.url + "\n"
+            )
         else:
             sys.stdout.write("Serving at " + self.url + "\n")
         try:
             while not self.stop_event.is_set():
                 if self.browse:
                     self.browse = False
-                    threading.Timer(1, webbrowser.open, args=(self.url,)).start()
+                    threading.Timer(1, webbrowser.open,
+                                    args=(self.url, )).start()
                 sys.stdout.flush()
                 self.server.handle_request()
         except Exception as e:
@@ -162,7 +181,9 @@ class HTTPServerThread(threading.Thread):
     def alive(self):
         return not self.terminate_event.is_set()
 
+
 thread_list = []
+
 
 def stop(port=8080, host=''):
     '''Stop serving model at host:port.
@@ -175,19 +196,21 @@ def stop(port=8080, host=''):
     for thread in thread_list:
         if port == thread.port and host == thread.host:
             thread.stop()
-    thread_list = [ thread for thread in thread_list if thread.alive() ]
+    thread_list = [thread for thread in thread_list if thread.alive()]
+
 
 def wait():
     '''Wait for console exit and stop all model servers.'''
     global thread_list
     try:
         while len(thread_list) > 0:
-            thread_list = [ thread for thread in thread_list if thread.alive() ]
+            thread_list = [thread for thread in thread_list if thread.alive()]
             time.sleep(1000)
     except (KeyboardInterrupt, SystemExit):
         for thread in thread_list:
             thread.stop()
-        thread_list = [ thread for thread in thread_list if thread.alive() ]
+        thread_list = [thread for thread in thread_list if thread.alive()]
+
 
 def serve(file, data, verbose=False, browse=False, port=8080, host=''):
     '''Start serving model from file or data buffer at host:port and open in web browser.
@@ -207,7 +230,8 @@ def serve(file, data, verbose=False, browse=False, port=8080, host=''):
     thread = HTTPServerThread(data, file, verbose, browse, port, host)
     thread.start()
     thread_list.append(thread)
-    thread_list = [ thread for thread in thread_list if thread.alive() ]
+    thread_list = [thread for thread in thread_list if thread.alive()]
+
 
 def start(file, verbose=False, browse=True, port=8080, host=''):
     '''Start serving model file at host:port and open in web browser

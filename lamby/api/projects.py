@@ -23,16 +23,25 @@ def clone_project(project_id):
     response['project_name'] = project.title
 
     # Fetch all CommitIDs related to the project
-    response['commits'] = dict([(commit.id, commit.to_dict())
-                                for commit in project.commits])
+    response['commits'] = dict(
+        [(commit.id, commit.to_dict()) for commit in project.commits]
+    )
 
     # Fetch the head commits
-    response['heads'] = dict([(commit.id, commit.to_dict()) for commit in
-                              Meta.get_head_commits(project.id)])
+    response['heads'] = dict(
+        [
+            (commit.id, commit.to_dict())
+            for commit in Meta.get_head_commits(project.id)
+        ]
+    )
 
     # Fetch the latest commits
-    response['latest_commits'] = dict([(commit.id, commit.to_dict()) for commit
-                                       in Meta.get_latest_commits(project.id)])
+    response['latest_commits'] = dict(
+        [
+            (commit.id, commit.to_dict())
+            for commit in Meta.get_latest_commits(project.id)
+        ]
+    )
 
     response['message'] = 'Succesfully fetched project data'
     return jsonify(response), 200
@@ -120,11 +129,15 @@ def push(project_id):
     for filename, commits in json['commits_to_upload'].items():
         for commit in commits:
             try:
-                db.session.add(Commit(id=commit['hash'],
-                                      project_id=project.id,
-                                      filename=filename,
-                                      timestamp=commit['timestamp'],
-                                      message=commit['message']))
+                db.session.add(
+                    Commit(
+                        id=commit['hash'],
+                        project_id=project.id,
+                        filename=filename,
+                        timestamp=commit['timestamp'],
+                        message=commit['message']
+                    )
+                )
                 db.session.commit()
             except Exception as e:
                 hash = commit['hash']
@@ -140,14 +153,17 @@ def push(project_id):
 
         head = Commit.query.get(commit['hash'])
         latest = Commit.query.filter_by(
-            project_id=project.id,
-            filename=filename
+            project_id=project.id, filename=filename
         ).order_by(Commit.timestamp.desc()).first()
 
         # Create a new meta entry if this is a new file
         if meta is None:
-            meta = Meta(project_id=project_id, filename=filename,
-                        head=head.id, latest=latest.id)
+            meta = Meta(
+                project_id=project_id,
+                filename=filename,
+                head=head.id,
+                latest=latest.id
+            )
             db.session.add(meta)
         else:
             # Update the head commit for the given filename

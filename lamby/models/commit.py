@@ -70,5 +70,6 @@ def get_random_string(n):
     import random
     import string
 
-    return ''.join([random.choice(string.ascii_letters + string.digits)
-                    for _ in range(n)])
+    return ''.join(
+        [random.choice(string.ascii_letters + string.digits) for _ in range(n)]
+    )

@@ -68,7 +68,7 @@ def test_projects(test_db, test_users):
         project = Project(title=f'Test Project {i}', owner_id=owner_id)
 
         # Add add members to project
-        for user in test_users[0:i-1]:
+        for user in test_users[0:i - 1]:
             user.projects.append(project)
 
         test_db.session.add(project)
@@ -87,24 +87,31 @@ def test_commits(test_db, test_projects):
 
     for i, project in enumerate(test_projects):
         # Add dummy commits to the project
-        for j in range(i+1):
+        for j in range(i + 1):
             commit_id = get_dummy_hash()
-            commit = Commit(id=commit_id, project_id=project.id,
-                            filename=f'model{j % 3}.onnx',
-                            message=f'Test Commit {j + 1}',
-                            author=f'{project.owner.email}',
-                            timestamp=time.time())
+            commit = Commit(
+                id=commit_id,
+                project_id=project.id,
+                filename=f'model{j % 3}.onnx',
+                message=f'Test Commit {j + 1}',
+                author=f'{project.owner.email}',
+                timestamp=time.time()
+            )
             test_db.session.add(commit)
             test_db.session.commit()
 
             # Search for an existing meta for the current file
-            meta = Meta.query.filter_by(project_id=project.id,
-                                        filename=commit.filename).first()
+            meta = Meta.query.filter_by(
+                project_id=project.id, filename=commit.filename
+            ).first()
 
             # Create a meta if this is a new file
             if meta is None:
-                meta = Meta(project_id=project.id,
-                            filename=commit.filename, head=commit.id)
+                meta = Meta(
+                    project_id=project.id,
+                    filename=commit.filename,
+                    head=commit.id
+                )
 
             # Set the head commit with a probability of 75%
             elif random.randint(0, 100) > 50:

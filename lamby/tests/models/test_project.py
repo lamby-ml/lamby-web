@@ -4,9 +4,11 @@ from lamby.models.project import Project
 
 
 def test_project_accepts_valid_owner(test_db, test_users):
-    project = Project(title='Test Project',
-                      description='A project for testing purposes',
-                      owner_id=test_users[0].id)
+    project = Project(
+        title='Test Project',
+        description='A project for testing purposes',
+        owner_id=test_users[0].id
+    )
 
     test_db.session.add(project)
     test_db.session.commit()
@@ -16,8 +18,9 @@ def test_project_accepts_valid_owner(test_db, test_users):
 
 def test_project_rejects_empty_owner(test_db):
     try:
-        project = Project(title='Test Project',
-                          description='A project for testing purposes')
+        project = Project(
+            title='Test Project', description='A project for testing purposes'
+        )
         test_db.session.add(project)
         test_db.session.commit()
         raise Exception
