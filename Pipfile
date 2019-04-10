@@ -18,8 +18,8 @@ flask-wtf = "*"
 sqlalchemy = "*"
 boto3 = "*"
 psycopg2-binary = "*"
-psycopg2 = "*"
 mistune = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
