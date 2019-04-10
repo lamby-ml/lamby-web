@@ -1,7 +1,8 @@
+import os
+
 import requests
 
-from flask import Blueprint, jsonify, request
-
+from flask import Blueprint, jsonify
 
 from lamby.models.commit import Commit
 from lamby.filestore import fs
@@ -10,7 +11,7 @@ deploy_api_blueprint = Blueprint('deploy_api', __name__)
 
 
 @deploy_api_blueprint.route('/<int:commit_id>', methods=['POST'])
-def deploy_model(project_id, filename):
+def deploy_model(commit_id):
     response = dict()
 
     commit = Commit.query.get(commit_id)
@@ -26,9 +27,9 @@ def deploy_model(project_id, filename):
         'region': 'nyc3',
         'size': 's-2vcpu-1gb',
         'image': 'docker-18-04',
-        'user_data': \
+        'user_data':
             f'''
-            #cloud-config
+            # cloud-config
 
             runcmd:
               - docker pull lambyml/lamby-deploy:latest
@@ -39,27 +40,26 @@ def deploy_model(project_id, filename):
     }
 
     try:
-        requests.post(
+        req = requests.post(
             'https://api.digitalocean.com/v2/droplets',
             headers={
                 'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
             },
             json=payload
         )
-        
-        json = r.json()
+
+        json = req.json()
 
         return jsonify(json), 200
     except requests.exceptions.ConnectionError:
-        response['message'] = 'Could not connect to API service. Aborting operation.'
+        response['message'] = 'Could not connect to API service.'
     except requests.exceptions.Timeout:
-        reponse['message'] = 'Connection timed out. Aborting operation.'
+        response['message'] = 'Connection timed out. Aborting operation.'
     except requests.exceptions.TooManyRedirects:
-        response['message'] = 'Too many redirects. Aborting operation.')
+        response['message'] = 'Too many redirects. Aborting operation.'
     except requests.exceptions.RequestException as e:
         response['message'] = f'Unknown requests error: {e}'
     except Exception as e:
         response['message'] = f'Unknown error: {e}'
-    
+
     return jsonify(response), 400
-    
