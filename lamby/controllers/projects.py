@@ -6,6 +6,7 @@ from flask_login import current_user
 
 from lamby.database import db
 from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
+from lamby.models.commit import Commit
 from lamby.models.meta import Meta
 from lamby.models.project import Project
 
@@ -68,8 +69,8 @@ def handle_delete_project(project_id):
 
     if delete_project_form.validate_on_submit():
         project = Project.query.get(project_id)
-
-        current_user.projects.remove(project)
+        for c in Commit.query.filter(Commit.project_id == project_id):
+            db.session.delete(c)
         current_user.owned_projects.remove(project)
 
         db.session.delete(project)
