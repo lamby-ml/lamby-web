@@ -2,7 +2,7 @@ import time
 import mistune
 
 from flask import Blueprint, flash, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from lamby.database import db
 from lamby.forms.deployment import CreateDeploymentForm
@@ -21,7 +21,8 @@ def index():
     # TODO: complete template
     # will be embedded on separate page
     # deployment.jinja
-    pass
+    deployments = Deployment.query.filter_by(owner_id=current_user.id)
+    return render_template('deployments.jinja', deployments=deployments)
 
 
 # Create a new deployment instance for a model
