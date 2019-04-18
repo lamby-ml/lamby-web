@@ -5,6 +5,7 @@ from lamby.database import db
 from lamby.forms.profile import (
     DeleteAccountForm, MyApiKeyForm, MyInfoForm, NewProjectForm
 )
+from lamby.models.commit import Commit
 from lamby.models.project import Project
 from lamby.models.user import User
 
@@ -72,6 +73,9 @@ def handle_delete_account():
 
     if delete_account_form.validate_on_submit():
         user = User.query.filter(User.id == current_user.id).one()
+        for p in Project.query.filter(Project.owner_id == current_user.id):
+            for c in Commit.query.filter(Commit.project_id == p.id):
+                db.session.delete(c)
         db.session.delete(user)
         db.session.commit()
         flash('You have successfully deleted your account!', category='success')

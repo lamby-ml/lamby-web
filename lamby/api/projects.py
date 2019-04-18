@@ -66,8 +66,9 @@ def push_status(project_id):
             x-auth header to be your API token. If you do not have an
             API token, you can create one with the command `lamby auth` or
             manually generate one on lamby web.'''
+        return jsonify(response), 401
 
-    if any(member.api_key == token for member in project.members):
+    if not any(member.api_key == token for member in project.members):
         response['message'] = 'You do not have access to this project'
         return jsonify(response), 401
 
@@ -114,7 +115,7 @@ def push(project_id):
             API token, you can create one with the command `lamby auth` or
             manually generate one on lamby web.'''
 
-    if any(member.api_key == token for member in project.members):
+    if not any(member.api_key == token for member in project.members):
         response['message'] = 'You do not have access to this project'
         return jsonify(response), 401
 
