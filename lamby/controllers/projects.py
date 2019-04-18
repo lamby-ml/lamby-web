@@ -1,12 +1,14 @@
 import time
 
 import mistune
+
 from flask import Blueprint, abort, flash, redirect, render_template, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from lamby.database import db
+from lamby.filestore import fs
 from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
-from lamby.models.commit import Commit
+from lamby.models.commit_attr import CommitAttr
 from lamby.models.meta import Meta
 from lamby.models.project import Project
 
@@ -47,8 +49,22 @@ def project(project_id):
 
 
 @projects_blueprint.route('/readme/<int:project_id>', methods=['POST'])
+@login_required
 def handle_edit_readme(project_id):
     edit_readme_form = EditReadmeForm()
+
+    project = Project.query.get(project_id)
+
+    if project is None:
+        flash('No such project!', category='danger')
+        return redirect(url_for('profile.index'))
+
+    if current_user.id != project.owner_id:
+        flash(
+            'You do not have permission to edit this README!',
+            category='danger'
+        )
+        return redirect(url_for('profile.index'))
 
     if edit_readme_form.validate_on_submit():
         project = Project.query.get(project_id)
@@ -64,13 +80,43 @@ def handle_edit_readme(project_id):
 
 
 @projects_blueprint.route('/delete/<int:project_id>', methods=['POST'])
+@login_required
 def handle_delete_project(project_id):
     delete_project_form = DeleteProjectForm()
 
     if delete_project_form.validate_on_submit():
         project = Project.query.get(project_id)
-        for c in Commit.query.filter(Commit.project_id == project_id):
-            db.session.delete(c)
+
+        if project is None:
+            flash('No such project!', category='danger')
+            return redirect(url_for('profile.index'))
+
+        if current_user.id != project.owner_id:
+            flash(
+                'You do not have permission to delete this project!',
+                category='danger'
+            )
+            return redirect(url_for('profile.index'))
+
+        # Remove project from minio
+        fs.delete_project(project)
+
+        # Clean up data in the Meta table
+        for meta in Meta.query.filter_by(project_id=project_id):
+            db.session.delete(meta)
+
+        # Clean up data in the Commit table
+        for commit in project.commits:
+            # Clean up data in the CommitAttr table
+            for attr in CommitAttr.query.filter_by(commit_id=commit.id):
+                db.session.delete(attr)
+            db.session.delete(commit)
+
+        # Remove the project from each of the members' projects
+        for member in project.members:
+            member.projects.remove(project)
+
+        # Remove project from the user's owned projects
         current_user.owned_projects.remove(project)
 
         db.session.delete(project)
