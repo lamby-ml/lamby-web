@@ -87,6 +87,7 @@ def register_blueprints(app):
     from lamby.controllers.users import users_blueprint
     from lamby.controllers.projects import projects_blueprint
     from lamby.controllers.models import models_blueprint
+    from lamby.controllers.deployments import deployment_blueprint
 
     # Import API endpoints
     from lamby.api.auth import auth_api_blueprint
@@ -99,6 +100,7 @@ def register_blueprints(app):
     app.register_blueprint(users_blueprint, url_prefix='/users')
     app.register_blueprint(projects_blueprint, url_prefix='/projects')
     app.register_blueprint(models_blueprint, url_prefix='/models')
+    app.register_blueprint(deployment_blueprint, url_prefix='/deployment')
 
     # Register API endpoints (all api routes should be prefixed with /api)
     app.register_blueprint(auth_api_blueprint, url_prefix='/api/auth')

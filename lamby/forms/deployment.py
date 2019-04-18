@@ -1,4 +1,4 @@
-from wtforms import SubmitField, HiddenField
+from wtforms import HiddenField, SubmitField
 
 from lamby.forms.base import BaseForm
 

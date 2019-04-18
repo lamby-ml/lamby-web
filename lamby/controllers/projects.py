@@ -5,8 +5,8 @@ from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_login import current_user
 
 from lamby.database import db
-from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
 from lamby.forms.deployment import CreateDeploymentForm
+from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
 from lamby.models.meta import Meta
 from lamby.models.project import Project
 
