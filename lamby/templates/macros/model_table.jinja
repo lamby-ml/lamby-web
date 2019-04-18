@@ -18,13 +18,17 @@
                 <!-- <td class="uk-text-right">{{ model.timestamp }}</td> -->
                 <td>{{model.timestamp}}</td>
                 <td>
+                    {% if current_user.is_authenticated and project.owner_id==current_user.id %}
                     <form method='post'
-                     action='{{ url_for("deployment.create_new_deployment", project_id=project, commit_id=model.commit_id)}}'
+                     action='{{ url_for("deployment.create_new_deployment", project_id=project.id, commit_id=model.commit_id)}}'
                      novalidate>
                         {{ create_deployment_form.hidden_tag() }}
                         {{ create_deployment_form.user_id(value=current_user.id)}}
                         {{ create_deployment_form.submit(class_="uk-button" ) }}
                      </form>
+                     {% else %}
+                        <p>Status</p>
+                     {% endif %}
                 </td>
             </tr>
         {%- endfor %}

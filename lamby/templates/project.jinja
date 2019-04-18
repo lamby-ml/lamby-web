@@ -9,7 +9,7 @@
 <h2 class="uk-text-center">{{ project.title }}</h2>
 
 {# Model Table #}
-{{ render_model_table(model_table_data, project.id, create_deployment_form) }}
+{{ render_model_table(model_table_data, project, create_deployment_form) }}
 
 {# Show the delete project form if the current user owns the project #}
 {% if current_user.is_authenticated and project.owner_id == current_user.id %}
