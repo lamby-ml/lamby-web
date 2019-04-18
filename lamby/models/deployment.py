@@ -25,7 +25,7 @@ class Deployment(db.Model):
 
     # Commit ID -- (ForeignKey to Commit) -- ID is hash
     commit_id = db.Column(db.String(64),
-                          db.ForeignKey('commit.id', ondelete='CASCASE'),
+                          db.ForeignKey('commits.id', ondelete='CASCADE'),
                           nullable=False)
 
     # Deployment IP -- IP address of deployment instance

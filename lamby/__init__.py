@@ -46,6 +46,7 @@ def connect_database(app):
     from lamby.models.commit import Commit  # NOQA
     from lamby.models.commit_attr import CommitAttr  # NOQA
     from lamby.models.meta import Meta  # NOQA
+    from lamby.models.deployment import Deployment  # NOQA
 
     db.init_app(app)
 

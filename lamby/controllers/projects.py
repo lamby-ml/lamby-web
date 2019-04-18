@@ -31,7 +31,8 @@ def project(project_id):
         'message': commit.message,
         'timestamp': time.strftime('%Y-%m-%d',
                                    time.localtime(commit.timestamp)),
-        'link': f'/models/{project.id}/{commit.id}'
+        'link': f'/models/{project.id}/{commit.id}',
+        'commit_id': commit.id
     } for commit in Meta.get_latest_commits(project.id)]
 
     markdown = mistune.Markdown()
