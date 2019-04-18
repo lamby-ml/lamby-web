@@ -34,7 +34,7 @@ def create_new_deployment(project_id, commit_id):
     new_deployment_form = CreateDeploymentForm()
 
     if new_deployment_form.validate_on_submit():
-        deployment = Deployment(owner_id=new_deployment_form.user_id.data,
+        deployment = Deployment(owner_id=current_user.id,
                                 project_id=project_id,
                                 commit_id=commit_id,
                                 deployment_ip='TEMP')

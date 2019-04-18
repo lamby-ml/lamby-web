@@ -1,0 +1,27 @@
+{% macro render_deployments(deployments) %}
+<div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
+    {%- for deployment in deployments %}
+        <div>
+            <div id="deployment-card-{{ loop.index }}"
+            class="uk-card uk-card-body uk-text-center"
+            style="word-wrap: break-word !important;">
+                <h3 class="uk-card-title">{{ deployment.commit_id }}</h3>
+                <p>{{ deployment.project_id }}</p>
+            </div>
+        </div>
+    {%- endfor %}
+</div>
+
+<script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+<script type="text/javascript">
+    const deployments = new NodeIterator('deployment-card');
+    deployments.applyToAll(deployment => {
+        deployment.addEventListener('mouseover', function() {
+            this.classList.add('uk-card-default');
+        });
+        deployment.addEventListener('mouseout', function() {
+            this.classList.remove('uk-card-default');
+        });
+    });
+</script>
+{%- endmacro %}
