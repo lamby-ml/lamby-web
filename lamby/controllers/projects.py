@@ -6,6 +6,7 @@ from flask_login import current_user
 
 from lamby.database import db
 from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
+from lamby.forms.deployment import CreateDeploymentForm
 from lamby.models.meta import Meta
 from lamby.models.project import Project
 
@@ -42,7 +43,8 @@ def project(project_id):
                            formatted_readme=formatted_readme,
                            edit_readme_form=EditReadmeForm(
                                markdown=u'' + project.readme),
-                           delete_project_form=DeleteProjectForm())
+                           delete_project_form=DeleteProjectForm(),
+                           create_deployment_form=CreateDeploymentForm())
 
 
 @projects_blueprint.route('/readme/<int:project_id>', methods=['POST'])

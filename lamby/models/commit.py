@@ -13,7 +13,7 @@ class Commit(db.Model):
     # Fields
     # -------------------------------------------------------------------------
 
-    # ID -- (PrimaryKey)
+    # ID -- (PrimaryKey) -- Commit Hash
     id = db.Column(db.String(64), primary_key=True)
 
     # PROJECT_ID -- (ForeignKey to Project)

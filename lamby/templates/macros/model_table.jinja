@@ -1,4 +1,4 @@
-{%  macro render_model_table(models) %}
+{%  macro render_model_table(models, project, create_deployment_form) %}
 <div class="uk-container">
     <input id="search_input" type="text" class="uk-width-1-4 uk-input uk-align-right" style="margin-bottom: 0px" placeholder="Search">
     <table id="model_data_table" class="uk-table uk-table-divider" style="width:100%">
@@ -7,6 +7,7 @@
                 <th>Model Name</th>
                 <th>Commit Message</th>
                 <th>Last Modified</th>
+                <th>Deployment Status</th>
             </tr>
         </thead>
         <tbody>
@@ -14,7 +15,18 @@
             <tr>
                 <td><a href="{{model.link}}">{{ model.filename }}</a></td>
                 <td>{{ model.message }}</td>
-                <td class="uk-text-right">{{ model.timestamp }}</td>
+                <!-- <td class="uk-text-right">{{ model.timestamp }}</td> -->
+                <td>{{model.timestamp}}</td>
+                <td>
+                    <form method='post'
+                     action='{{ url_for(deployments.create_new_deployment, project_id=project)}}'
+                     novalidate>
+                        {{ create_deployment_form.user_id(current_user.id)}}
+                        {{ create_deployment_form.project_id(project)}}
+                        {{ create_deployment_form.commit_id(model.id)}}
+                        {{ create_deployment_form.submit(class_="uk-button" ) }}
+                     </form>
+                </td>
             </tr>
         {%- endfor %}
         </tbody>
