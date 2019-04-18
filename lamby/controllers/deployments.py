@@ -1,7 +1,7 @@
 import time
 import mistune
 
-from flask import Blueprint, flash, render_template
+from flask import Blueprint, flash, render_template, abort
 from flask_login import login_required, current_user
 
 from lamby.database import db
@@ -20,6 +20,17 @@ deployment_blueprint = Blueprint('deployment', __name__)
 def index():
     deployments = Deployment.query.filter_by(owner_id=current_user.id)
     return render_template('deployments.jinja', deployments=deployments)
+
+
+@deployment_blueprint.route('/<int:deployment_id>')
+@login_required
+def deployment(deployment_id):
+    deployment = Deployment.query.get(deployment_id)
+
+    if deployment is None:
+        abort(404)
+
+    return render_template('deployment.jinja')
 
 
 # Create a new deployment instance for a model
