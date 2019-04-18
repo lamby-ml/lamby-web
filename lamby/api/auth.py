@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from lamby.models.user import User
+from lamby.database import db
 
 auth_api_blueprint = Blueprint('auth_api', __name__)
 
@@ -18,6 +19,7 @@ def get_api_token():
 
     if user.api_key is None:
         user.generate_new_api_key()
+        db.session.commit()
 
     response['message'] = 'Successfully fetched API key!'
     response['api_key'] = user.api_key
