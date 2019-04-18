@@ -18,9 +18,6 @@ deployment_blueprint = Blueprint('deployment', __name__)
 @deployment_blueprint.route('/')
 @login_required
 def index():
-    # TODO: complete template
-    # will be embedded on separate page
-    # deployment.jinja
     deployments = Deployment.query.filter_by(owner_id=current_user.id)
     return render_template('deployments.jinja', deployments=deployments)
 
