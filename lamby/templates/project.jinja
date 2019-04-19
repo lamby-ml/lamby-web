@@ -36,6 +36,13 @@
         Edit README
     </button>
     {% endif %}
+    <button
+        class="uk-button uk-button-default uk-margin-small-right uk-align-right uk-margin-top"
+        type="button"
+        uk-toggle="target: #project-info-modal"
+    >
+        Project Info
+    </button>
 </div>
 
 {# README modal #}
@@ -46,11 +53,30 @@
         {{ edit_readme_form.hidden_tag() }}
         {{ edit_readme_form.markdown(class_="uk-align uk-textarea uk-form-medium", style="height: 500px;") }}
         {{ edit_readme_form.submit(class_="uk-button uk-button-default uk-margin-small-bottom uk-align-right") }}
-
         <button class="uk-button uk-button-default uk-modal-close uk-align-right" type="button">
             Cancel
         </button>
     </form>
+  </div>
+</div>
+
+{# Project Info modal #}
+<div id="project-info-modal" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Project Information</h2>
+    <dl class="uk-description-list uk-description-list-divider">
+        <dt>Project Title</dt>
+        <dd>{{ project.title }}</dd>
+        <dt>Project Description</dt>
+        <dd>{{ project.description }}</dd>
+        <dt>Project Owner</dt>
+        <dd>{{ project.owner.email }}</dd>
+        <dt>Project Members</dt>
+        <dd>
+        {% for name in project.members %}
+            {{ name.email }} <br>
+        {% endfor %}
+    </dl>
   </div>
 </div>
 

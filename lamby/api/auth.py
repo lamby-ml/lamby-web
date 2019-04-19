@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
-from lamby.models.user import User
 from lamby.database import db
+from lamby.models.user import User
 
 auth_api_blueprint = Blueprint('auth_api', __name__)
 

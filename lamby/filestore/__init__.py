@@ -4,6 +4,7 @@ import boto3
 from botocore.client import Config
 from botocore.exceptions import ClientError
 
+
 """
 ###########
 Boto3 Notes
