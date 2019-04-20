@@ -1,6 +1,37 @@
 {%  macro render_projects(projects) %}
+
+{% set attributes = ['last_modified', 'date_created'] %}
+{% set attribute_labels = {'last_modified': 'Last Modified', 'date_created': 'Date Created'} %}
+{% set attribute_sort_orders = {'last_modified': True, 'date_created': False} %}
+{% set requested_attribute = request.args.get('project_order', default='last_modified') %}
+
+{% if requested_attribute not in attributes %}
+    {% set requested_attribute = 'last_modified' %}
+{% endif %}
+
+<div align="center">
+    <button class="uk-button uk-button-default" type="button" style="margin-bottom: 5px; border: none;">
+        Sort By: {{ attribute_labels[requested_attribute] }}
+    </button>
+
+    <div uk-dropdown="pos: bottom-center">
+        <ul class="uk-nav uk-dropdown-nav">
+            <li class="uk-active"><a href="#">{{ attribute_labels[requested_attribute] }}</a></li>
+            {%- for attribute in attributes %}
+                {% if attribute != requested_attribute %}
+                    <li>
+                        <a href="{{ modify_query(project_order=attribute) }}">
+                            {{ attribute_labels[attribute] }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 <div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
-    {%- for project in projects %}
+    {%- for project in projects|sort(attribute=requested_attribute, reverse=attribute_sort_orders[requested_attribute]) %}
         <div>
             <div onclick="window.location.href='{{ url_for('projects.project', project_id=project.id) }}'" id="project-card-{{ loop.index }}" class="uk-card uk-card-body uk-text-center" style="word-wrap: break-word !important;">
                 <h3 class="uk-card-title">{{ project.title }}</h3>

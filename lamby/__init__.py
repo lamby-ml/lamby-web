@@ -12,6 +12,7 @@ def create_app():
     app = initialize_filestore(app)
     app = initialize_sessions(app)
     app = register_blueprints(app)
+    app = configure_frontend(app)
 
     return app
 
@@ -103,5 +104,21 @@ def register_blueprints(app):
     # Register API endpoints (all api routes should be prefixed with /api)
     app.register_blueprint(auth_api_blueprint, url_prefix='/api/auth')
     app.register_blueprint(projects_api_blueprint, url_prefix='/api/projects')
+
+    return app
+
+
+def configure_frontend(app):
+    from flask import request
+    from werkzeug.urls import url_encode
+
+    @app.template_global()
+    def modify_query(**new_values):
+        args = request.args.copy()
+
+        for key, value in new_values.items():
+            args[key] = value
+
+        return '{}?{}'.format(request.path, url_encode(args))
 
     return app

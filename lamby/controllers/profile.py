@@ -16,7 +16,6 @@ profile_blueprint = Blueprint('profile', __name__)
 def index():
     return render_template('profile.jinja',
                            owner=current_user,
-                           projects=current_user.projects,
                            my_info_form=MyInfoForm(),
                            my_api_key_form=MyApiKeyForm(),
                            delete_account_form=DeleteAccountForm(),
@@ -37,7 +36,6 @@ def handle_my_info_form():
 
     return render_template('profile.jinja',
                            owner=current_user,
-                           projects=current_user.projects,
                            my_info_form=my_info_form,
                            my_api_key_form=MyApiKeyForm(),
                            delete_account_form=DeleteAccountForm(),
