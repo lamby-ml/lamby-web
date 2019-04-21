@@ -92,6 +92,7 @@ def register_blueprints(app):
     # Import API endpoints
     from lamby.api.auth import auth_api_blueprint
     from lamby.api.projects import projects_api_blueprint
+    from lamby.api.deploy import deploy_api_blueprint
 
     # Register controllers
     app.register_blueprint(home_blueprint)
@@ -105,5 +106,6 @@ def register_blueprints(app):
     # Register API endpoints (all api routes should be prefixed with /api)
     app.register_blueprint(auth_api_blueprint, url_prefix='/api/auth')
     app.register_blueprint(projects_api_blueprint, url_prefix='/api/projects')
+    app.register_blueprint(deploy_api_blueprint, url_prefix='/api/deploy')
 
     return app

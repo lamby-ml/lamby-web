@@ -22,52 +22,13 @@ def deploy_model(commit_id):
 
     object_link = fs.get_link(f'{commit.project_id}/{commit.id}')
 
-    payload = {
-        'name':
-            f'lamby-deploy-{commit.project_id}-{commit.id}',
-        'region':
-            'nyc3',
-        'size':
-            's-1vcpu-1gb',
-        'image':
-            'docker-18-04',
-        'user_data':
-            f'''# cloud-config
-
-            runcmd:
-              - docker pull lambyml/lamby-deploy:latest
-              - docker run --name lamby-deploy -p 80:3000 \
-                    -e ONNX_MODEL_URI={object_link} \
-                    lambyml/lamby-deploy:latest
-            '''
-    }
-
     try:
-        req = requests.post(
-            'https://api.digitalocean.com/v2/droplets',
-            headers={
-                'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
-            },
-            json=payload
-        )
+        deployment_name = f'lamby-deploy-{commit.project_id}-{commit.id}'
 
-        json = req.json()
-
-        droplet_id = json['droplet']['id']
-
-        # Fetch the droplet IP address
-        req = requests.get(
-            f'https://api.digitalocean.com/v2/droplets/{droplet_id}',
-            headers={
-                'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
-            },
-        )
-
-        json = req.json()
-
-        droplet_ip = json['droplet']['networks']['v4'][0]['ip_address']
+        droplet_ip = create_droplet(deployment_name, object_link)
 
         response['message'] = f'Your API is up at {droplet_ip}'
+
         return jsonify(response), 200
     except requests.exceptions.ConnectionError:
         response['message'] = 'Could not connect to API service.'
@@ -81,3 +42,63 @@ def deploy_model(commit_id):
         response['message'] = f'Unknown error: {e}'
 
     return jsonify(response), 400
+
+
+def create_droplet(deployment_name, model_uri):
+    payload = {
+        'name': deployment_name,
+        'region':
+            'nyc3',
+        'size':
+            's-1vcpu-1gb',
+        'image':
+            'docker-18-04',
+        'user_data':
+            f'''# cloud-config
+
+            runcmd:
+              - docker pull lambyml/lamby-deploy:latest
+              - docker run --name lamby-deploy -p 80:3000 \
+                    -e ONNX_MODEL_URI={model_uri} \
+                    lambyml/lamby-deploy:latest
+            '''
+    }
+
+    req = requests.post(
+        'https://api.digitalocean.com/v2/droplets',
+        headers={
+            'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
+        },
+        json=payload
+    )
+
+    json = req.json()
+
+    droplet_id = json['droplet']['id']
+
+    # Fetch the droplet IP address
+    req = requests.get(
+        f'https://api.digitalocean.com/v2/droplets/{droplet_id}',
+        headers={
+            'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
+        },
+    )
+
+    json = req.json()
+
+    droplet_ip = json['droplet']['networks']['v4'][0]['ip_address']
+
+    return droplet_id, droplet_ip
+
+
+def delete_droplet(droplet_id):
+    requests.delete(
+        f'https://api.digitalocean.com/v2/droplets/{droplet_id}',
+        headers={
+            'Authorization': f'Bearer {os.getenv("DIGITAL_OCEAN_API_KEY")}'
+        },
+    )
+
+
+def ping_deployed_model(url):
+    return requests.get(url).status_code == 200
