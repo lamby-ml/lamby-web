@@ -16,6 +16,41 @@
 {% endblock %}
 
 {% block content %}
+{# Commits Drop Down #}
+<button class="uk-button uk-button-default" type="button">COMMITS   <span uk-icon="icon:  triangle-down"></span></button>
+<div uk-dropdown>
+    <ul class="uk-nav uk-dropdown-nav">
+    {% for commit in commits %}
+        {% if commit.id == head_commit %}
+        <li><a href="/models/{{project_id}}/{{commit.id}}">HEAD: {{commit.id}}</a></li>
+        {% else %}
+        <li><a href="/models/{{project_id}}/{{commit.id}}">{{commit.id}}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
+<p style="float: right; padding:10px; ">Current Commit: {{current_commit}}</p>
+
+<p uk-margin>
+    {% if current_user.id == project_owner_id %}
+        <button class="uk-button uk-button-default" onclick="changeHead()" type="button">Change head</button>
+    {% endif %}
+</p>
+
+<script type="text/javascript">
+    const changeHead = async () => {
+        try {
+            const res = await fetch("{{ url_for('models.change_head', project_id=project_id, commit_id=current_commit) }}", {
+                method: "POST",
+                body: {},
+            });
+            window.location.href = "{{ request.url }}";
+        } catch (err) {
+            console.log(JSON.stringify(err, undefined, 2));
+        }
+    }
+</script>
+
 <a class="center logo" href="https://github.com/lutzroeder/netron" target="_blank">
     <svg id="spinner" class="spinner logo absolute" viewbox="0 0 1024 1024" style="display: none;">
         <g transform="translate(512, 512)" style="opacity: 1">
@@ -24,11 +59,13 @@
     </svg>
 </a>
 
+
+
 <div id="graph-container" style="overflow: scroll; width: 100%; height: 100%">
     <svg id="graph" class="graph" preserveaspectratio="xMidYMid meet" width="100%" height="100%"></svg>
 </div>
 
-<div id="toolbar" class="toolbar" style="position: absolute; top: 10px; left: 10px; display: none;">
+<div id="toolbar" class="toolbar" style="position: absolute; top: 35px; left: 10px; display: none;">
     <button id="model-properties-button" title="Model Properties">
         <svg class="icon" viewbox="0 0 100 100">
             <rect class="border" x="12" y="12" width="76" height="76" rx="16" ry="16" stroke-width="8"></rect>
@@ -71,6 +108,7 @@
     <div id="sidebar-content" class="sidebar-content">
     </div>
 </div>
+
 
 {# Netron JS requirements #}
 <script type="text/javascript" src="{{ url_for('static', filename='netron/d3.min.js') }}"></script>
