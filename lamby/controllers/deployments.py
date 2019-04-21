@@ -1,7 +1,7 @@
 import time
 import mistune
 
-from flask import Blueprint, flash, render_template, abort
+from flask import Blueprint, flash, render_template, redirect, url_for, abort
 from flask_login import login_required, current_user
 
 from lamby.database import db
@@ -78,3 +78,22 @@ def create_new_deployment(project_id, commit_id):
                                markdown=u'' + project.readme),
                            delete_project_form=DeleteProjectForm(),
                            create_deployment_form=CreateDeploymentForm())
+
+
+@deployment_blueprint.route('/delete/<int:deployment_id>')
+@login_required
+def delete_deployment(deployment_id):
+    deployment = Deployment.query.get(deployment_id)
+
+    if current_user.id == deployment.owner_id:
+        db.session.delete(deployment)
+        db.session.commit()
+
+        flash('Successfully depleted deployment instance. ',
+              category='success')
+
+    else:
+        flash('You must be this deployment\'s owner in order to delete it.',
+              category='failure')
+
+    return redirect(url_for('deployment.index'))

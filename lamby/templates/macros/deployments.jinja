@@ -8,6 +8,9 @@
             style="word-wrap: break-word !important;">
                 <h2 class="uk-card-title">{{ deployment.commit_id }}</h3>
                 <p>{{ deployment.project_id }}</p>
+                <a class="uk-button uk-button-danger uk-button-small" href="{{ url_for('deployment.delete_deployment', deployment_id=deployment.id)}}">
+                    Delete
+                </a>
             </div>
         </div>
     {%- endfor %}
