@@ -1,14 +1,16 @@
-{% macro render_deployments(deployments) %}
+{% macro render_deployments(deployments_data) %}
 <div class="uk-child-width-1-4@s uk-grid-match" uk-grid>
-    {%- for deployment in deployments %}
+    {%- for deployment in deployments_data %}
         <div>
             <div onclick="window.location.href='{{ url_for('deployment.deployment', deployment_id=deployment.id)}}'"
             id="deployment-card-{{ loop.index }}"
             class="uk-card uk-card-body uk-text-center"
             style="word-wrap: break-word !important;">
-                <h2 class="uk-card-title">{{ deployment.commit_id }}</h3>
-                <p>{{ deployment.project_id }}</p>
-                <a class="uk-button uk-button-danger uk-button-small" href="{{ url_for('deployment.delete_deployment', deployment_id=deployment.id)}}">
+                <h3 class="uk-card-title">{{ deployment.project_name }}</h3>
+                <p>{{ deployment.file_name }}</p>
+                <h5>{{ deployment.commit_hash }}</h5>
+                <a class="uk-button uk-button-danger uk-button-small uk-align-right"
+                href="{{ url_for('deployment.delete_deployment', deployment_id=deployment.id)}}">
                     Delete
                 </a>
             </div>

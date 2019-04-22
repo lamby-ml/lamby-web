@@ -9,6 +9,7 @@ from lamby.forms.deployment import CreateDeploymentForm
 from lamby.models.deployment import Deployment
 from lamby.models.project import Project
 from lamby.models.meta import Meta
+from lamby.models.commit import Commit
 
 from lamby.forms.projects import (EditReadmeForm, DeleteProjectForm)
 
@@ -19,7 +20,21 @@ deployment_blueprint = Blueprint('deployment', __name__)
 @login_required
 def index():
     deployments = Deployment.query.filter_by(owner_id=current_user.id)
-    return render_template('deployments.jinja', deployments=deployments)
+    deployments_data = []
+
+    for deployment in deployments:
+        project = Project.query.get(deployment.project_id)
+        commit = Commit.query.get(deployment.commit_id)
+        entry = {
+            'id': deployment.id,
+            'project_name': project.title,
+            'file_name': commit.filename,
+            'commit_hash': commit.id[0:5]
+        }
+        deployments_data.append(entry)
+
+    return render_template('deployments.jinja',
+                           deployment_data=deployments_data)
 
 
 @deployment_blueprint.route('/<int:deployment_id>')
