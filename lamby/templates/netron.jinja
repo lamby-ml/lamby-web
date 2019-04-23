@@ -17,17 +17,27 @@
 
 {% block content %}
 
-{# Commits Drop Down #}
-<button class="uk-button uk-button-default uk-width-1-6" style="margin-bottom: 5px" type="button">
-    COMMITS <span uk-icon="icon: triangle-down"></span>
-</button>
+{# Commit Metadata #}
+<div class="uk-subnav uk-subnav-divider">
+    <span>
+        <li class="uk-button uk-button-default" type="button">Commits <span uk-icon="icon:  triangle-down"></span></li>
+        {% if current_user in project.members %}
+            <li class="uk-button uk-button-default" type="button" onclick="changeHead()">Change Head</li>
+        {% endif %}
+    </span>
+    <li class="">Current Commit: {{ commit_id|truncate(7, True, '') }}</li>
+    <li class="">Author: {{ author }}</li>
+    <li class="">Timestamp: {{ timestamp }}</li>
+    <li class="">Message: {{ message }}</li>
+</div>
 
-<div uk-dropdown>
+{# Commits Drop Down Information #}
+<div uk-dropdown="mode: click;">
     <ul class="uk-nav uk-dropdown-nav">
     {% for commit in commits %}
         <li>
             <a href="/models/{{ project.id }}/{{ commit.id }}">
-                {% if commit.id == head_commit %}HEAD:{% endif %}
+                {% if commit.id == head %}<b>HEAD:</b>{% endif %}
                 {{ commit.id|truncate(7, True, '') }}
             </a>
         </li>
@@ -36,11 +46,8 @@
 </div>
 <br />
 
-{% if current_user.id == project.owner_id %}
-    <button class="uk-button uk-button-default uk-width-1-6" onclick="changeHead()" type="button">Change head</button>
-{% endif %}
 
-<h4 class="uk-text-center">Current Commit: {{ commit_id|truncate(7, True, '') }}</h4>
+
 
 
 <script type="text/javascript">

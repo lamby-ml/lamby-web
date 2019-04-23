@@ -1,3 +1,5 @@
+import datetime as dt
+
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import login_required
 
@@ -18,7 +20,13 @@ def model(project_id, commit_id):
         flash('That project does not exist!', category='danger')
         return redirect(url_for('projects.index'))
 
+    project = Project.query.get(project_id)
     commit = Commit.query.get(commit_id)
+    author = project.owner.email
+    timestamp = dt.datetime.utcfromtimestamp(
+        commit.timestamp).strftime('%m-%d-%Y %I:%M %p')
+
+    message = commit.message
 
     if commit is None:
         flash('That commit does not exist!', category='danger')
@@ -32,9 +40,13 @@ def model(project_id, commit_id):
     context = {
         'project': project,
         'commit_id': commit_id,
+        'author': author,
+        'timestamp': timestamp,
+        'message': message,
         'commits': Commit.query.filter_by(
             project_id=project.id,
             filename=commit.filename
+
         ),
         'head': meta.head,
         'object_link': fs.get_link(project_id, commit_id),
@@ -57,14 +69,14 @@ def change_head(project_id, commit_id):
                                 filename=commit.filename).first()
 
     if meta is None:
-        flash('There was an error reseting the head')
+        flash('There was an error changing the head')
         return jsonify({'message': 'fail'}), 400
     else:
         meta.head = commit.id
         try:
             db.session.commit()
             flash(
-                'You have successfully reset the head',
+                'You have successfully changed the head',
                 category='success'
             )
         except Exception as e:
