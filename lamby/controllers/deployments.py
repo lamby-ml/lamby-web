@@ -79,7 +79,8 @@ def create_new_deployment(project_id, commit_id):
         'message': commit.message,
         'timestamp': time.strftime('%Y-%m-%d',
                                    time.localtime(commit.timestamp)),
-        'link': f'/models/{project.id}/{commit.id}'
+        'link': f'/models/{project.id}/{commit.id}',
+        'is_deployed': Deployment.is_deployed(project_id, commit.id)
     } for commit in Meta.get_latest_commits(project.id)]
 
     markdown = mistune.Markdown()

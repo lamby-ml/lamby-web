@@ -9,6 +9,7 @@ from lamby.forms.deployment import CreateDeploymentForm
 from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
 from lamby.models.meta import Meta
 from lamby.models.project import Project
+from lamby.models.deployment import Deployment
 
 projects_blueprint = Blueprint('projects', __name__)
 
@@ -32,8 +33,9 @@ def project(project_id):
         'timestamp': time.strftime('%Y-%m-%d',
                                    time.localtime(commit.timestamp)),
         'link': f'/models/{project.id}/{commit.id}',
-        'commit_id': commit.id
-    } for commit in Meta.get_latest_commits(project.id)]
+        'commit_id': commit.id,
+        'is_deployed': Deployment.is_deployed(project_id, commit.id)
+    }for commit in Meta.get_latest_commits(project.id)]
 
     markdown = mistune.Markdown()
     formatted_readme = markdown(project.readme)

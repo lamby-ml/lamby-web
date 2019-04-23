@@ -33,3 +33,9 @@ class Deployment(db.Model):
 
     def __str__(self):
         return f'< Deployment IP={self.deployment_ip}/>'
+
+    @staticmethod
+    def is_deployed(pid, cid):
+        deployment = Deployment.query.filter_by(
+            project_id=pid, commit_id=cid).first()
+        return (deployment is not None)

@@ -18,7 +18,7 @@
                 <!-- <td class="uk-text-right">{{ model.timestamp }}</td> -->
                 <td>{{model.timestamp}}</td>
                 <td>
-                    {% if current_user.is_authenticated and project.owner_id==current_user.id %}
+                    {% if current_user.is_authenticated and project.owner_id==current_user.id and not model.is_deployed%}
                     <form method='post'
                      action='{{ url_for("deployment.create_new_deployment", project_id=project.id, commit_id=model.commit_id)}}'
                      novalidate>
@@ -26,8 +26,10 @@
                         {{ create_deployment_form.user_id(value=current_user.id)}}
                         {{ create_deployment_form.submit(class_="uk-button" ) }}
                      </form>
-                     {% else %}
+                     {% elif current_user.is_authenticated and model.is_deployed %}
                         <p>Status</p>
+                     {% else %}
+                        <p> Other user woooo </p>
                      {% endif %}
                 </td>
             </tr>
