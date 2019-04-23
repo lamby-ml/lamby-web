@@ -15,7 +15,6 @@
             <tr>
                 <td><a href="{{model.link}}">{{ model.filename }}</a></td>
                 <td>{{ model.message }}</td>
-                <!-- <td class="uk-text-right">{{ model.timestamp }}</td> -->
                 <td>{{model.timestamp}}</td>
                 <td>
                     {% if current_user.is_authenticated and project.owner_id==current_user.id and not model.is_deployed%}
