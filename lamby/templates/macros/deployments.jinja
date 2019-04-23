@@ -10,7 +10,7 @@
                 <h4>{{ deployment.commit.filename }} - {{ deployment.commit.id|truncate(7, True, '') }}</h4>
                 <p>{{ deployment.deployment_ip }}<p>
                 <button
-                    class="uk-button uk-button-danger uk-button-small uk-align-center"
+                    class="uk-button uk-button-danger uk-button-small uk-align-right"
                     onclick="deleteDeployment{{ deployment.id }}()"
                 >
                     Delete

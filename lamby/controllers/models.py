@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from lamby.database import db
 from lamby.filestore import fs
@@ -87,6 +87,11 @@ def change_head(project_id, commit_id):
 def deploy_model(project_id, commit_id):
     project = Project.query.get(project_id)
 
+    if current_user.id != project.owner_id:
+        flash('Invalid user credential privilege! Unable to deploy.',
+              category='danger')
+        return jsonify({'message': 'invalid user'})
+
     if project is None:
         flash('No such project!', category='danger')
         return jsonify({'message': 'invalid project'})
@@ -106,6 +111,10 @@ def deploy_model(project_id, commit_id):
         flash('That commit is already deployed!', category='danger')
         return jsonify({'message': 'already deployed'})
 
+    # create droplet and deploy here
+    print('deploying model...')
+
+    # TODO: remove hardcoded ip
     deploy = Deployment(
         project_id=project_id,
         commit_id=commit_id,
@@ -125,6 +134,12 @@ def deploy_model(project_id, commit_id):
 def undeploy_model(project_id, commit_id):
     project = Project.query.get(project_id)
 
+    if current_user.id != project.owner_id:
+        flash('Invalid user credential privilege!'
+              + 'Unable to delete deployment instance.',
+              category='danger')
+        return jsonify({'message': 'invalid user'})
+
     if project is None:
         flash('No such project!', category='danger')
         return jsonify({'message': 'invalid project'})
@@ -132,7 +147,7 @@ def undeploy_model(project_id, commit_id):
     commit = Commit.query.get(commit_id)
 
     if commit is None:
-        flash('There was an error changing the head commit', category='danger')
+        flash('This commit doesn\'t exist!', category='danger')
         return jsonify({'message': 'invalid commit'}), 400
 
     deploy = Deployment.query.filter_by(
@@ -144,6 +159,8 @@ def undeploy_model(project_id, commit_id):
         flash('That commit is not currently deployed!', category='danger')
         return jsonify({'message': 'not deployed'})
 
+    # TODO: make call to delete droplet here
+    print('deleting deployment instance...')
     db.session.delete(deploy)
     db.session.commit()
 
