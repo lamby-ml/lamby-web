@@ -12,7 +12,7 @@ class Config(object):
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    MINIO_SERVER_URI = 'http://134.209.32.130:9000'
+    MINIO_SERVER_URI = os.getenv('MINIO_SERVER_URI')
     MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY')
     MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY')
 

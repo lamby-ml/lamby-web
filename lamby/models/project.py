@@ -1,3 +1,5 @@
+import time
+
 from lamby.database import db
 
 
@@ -14,7 +16,7 @@ class Project(db.Model):
     # ID -- (PrimaryKey)
     id = db.Column(db.Integer, primary_key=True)
 
-    # Owner ID -- (ForeignKey to User)
+    # OWNER ID -- (ForeignKey to User)
     owner_id = db.Column(db.Integer,
                          db.ForeignKey('user.id', ondelete='CASCADE'),
                          nullable=False)
@@ -27,6 +29,14 @@ class Project(db.Model):
 
     # README -- Project information stored in markdown format
     readme = db.Column(db.Text, default='# README')
+
+    # DATE CREATED -- Timestamp of when the project was created
+    date_created = db.Column(db.Integer, default=time.time)
+
+    # DATE CHANGED -- Timestamp of when the project was most recently changed
+    last_modified = db.Column(db.Integer,
+                              default=time.time,
+                              onupdate=time.time)
 
     # -------------------------------------------------------------------------
     # Relationships

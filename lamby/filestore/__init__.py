@@ -35,25 +35,27 @@ class Filestore(object):
             aws_access_key_id=app.config['MINIO_ACCESS_KEY'],
             aws_secret_access_key=app.config['MINIO_SECRET_KEY'],
             config=Config(signature_version='s3v4'),
-            region_name='us-east-1'
-        )
+            region_name='us-east-1')
         self.raw_client = boto3.client(
             's3',
             endpoint_url=app.config['MINIO_SERVER_URI'],
             aws_access_key_id=app.config['MINIO_ACCESS_KEY'],
             aws_secret_access_key=app.config['MINIO_SECRET_KEY'],
             config=Config(signature_version='s3v4'),
-            region_name='us-east-1'
-        )
+            region_name='us-east-1')
         self.create_default_bucket()
         # The name of the bucket is just the current environment (ie. testing)
         self.default_bucket_name = os.getenv('FLASK_ENV')
         self.default_bucket = self.client.Bucket(self.default_bucket_name)
 
     def get_link(self, key):
-        return self.raw_client.generate_presigned_url('get_object', Params={
-            'Bucket': self.default_bucket_name,
-            'Key': key}, ExpiresIn=100)
+        return self.raw_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': self.default_bucket_name,
+                'Key': key
+            },
+            ExpiresIn=100)
 
     def create_default_bucket(self):
         try:
@@ -70,7 +72,9 @@ class Filestore(object):
         try:
             bucket = self.client.Bucket('testing')
             bucket.delete_objects(Delete={
-                'Objects': [{'Key': obj.key} for obj in bucket.objects.all()]
+                'Objects': [{
+                    'Key': obj.key
+                } for obj in bucket.objects.all()]
             })
         except ClientError as e:
             error_code = e.response['Error']['Code']
@@ -115,6 +119,26 @@ class Filestore(object):
                 raise Exception('Cannot find object with key %s' % key)
             else:
                 raise Exception('Unknown client error %s' % error_code)
+
+    def delete_project(self, project):
+        """
+        Delete a project from the Minio Server.
+        """
+        if project is None or len(project.commits) == 0:
+            return
+
+        objects = [{
+            'Key': f'{project.id}/{commit.id}'
+            for commit in project.commits
+        }]
+
+        self.raw_client.delete_objects(
+            Bucket=self.default_bucket_name,
+            Delete={
+                'Objects': objects,
+                'Quiet': True,
+            },
+        )
 
 
 fs = Filestore()

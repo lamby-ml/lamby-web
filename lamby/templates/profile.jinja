@@ -29,7 +29,7 @@
       {# Projects Tab #}
       <li>
           {# Display projects grid #}
-          {{ render_projects(projects) }}
+          {{ render_projects(current_user.projects) }}
 
           {# New project button #}
           <div class="uk-position-bottom-right" style="margin-right:50px; margin-bottom:50px">
