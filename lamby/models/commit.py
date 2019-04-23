@@ -39,6 +39,11 @@ class Commit(db.Model):
     # Relationships
     # -------------------------------------------------------------------------
 
+    # DEPLOYMENT (Commit one-to-one Deployment)
+    # -----------------------------------------
+    # Represents the deployment relevant to each commit
+    deployment = db.relationship('Deployment', backref='commit', uselist=False)
+
     # ATTRIBUTES (Commit one-to-many CommitAttr)
     # -------------------------------------------
     # Represents the attributes (eg. tags) relevant to each commit

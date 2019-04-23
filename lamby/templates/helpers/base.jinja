@@ -44,7 +44,6 @@
                     {{ render_navlinks([
                         ('HOME', 'home.index'),
                         ('PROFILE', 'profile.index'),
-                        ('DEPLOYMENTS', 'deployment.index'),
                         ('LOGOUT', 'auth.logout')
                     ]) }}
                 {% else %}
@@ -68,20 +67,20 @@
     {# Flashed Messages #}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    {% for category, message in messages %}
-    <div class="uk-container-small uk-align-center uk-alert-{{ category }}" uk-alert>
-        <a id="flash-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
-        <p>{{ message }}</p>
-    </div>
-    {% endfor %}
+        {% for category, message in messages %}
+            <div class="uk-container-small uk-align-center uk-alert-{{ category }}" uk-alert>
+                <a id="flash-close-{{ loop.index }}" class="uk-alert-close" uk-close></a>
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
 
-    <script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
-    <script type="text/javascript">
-        const messages = new NodeIterator('flash-close');
-        messages.applyToAll(message => {
-            setTimeout(() => message.click(), 1000 * 3);
-        });
-    </script>
+        <script src="{{ url_for('static', filename='js/iterator.js') }}"></script>
+        <script type="text/javascript">
+            const messages = new NodeIterator('flash-close');
+            messages.applyToAll(message => {
+                setTimeout(() => message.click(), 1000 * 3);
+            });
+        </script>
     {% endif %}
     {% endwith %}
 

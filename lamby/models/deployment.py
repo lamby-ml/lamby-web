@@ -5,37 +5,38 @@ class Deployment(db.Model):
     # -------------------------------------------------------------------------
     # Meta
     # -------------------------------------------------------------------------
-    __tablename__ = 'deployment'
+    __tablename__ = 'deployments'
 
     # -------------------------------------------------------------------------
     # Fields
     # -------------------------------------------------------------------------
+
     # ID -- (PrimaryKey)
     id = db.Column(db.Integer, primary_key=True)
 
-    # Owner ID -- (ForeignKey to User)
-    owner_id = db.Column(db.Integer,
-                         db.ForeignKey('user.id', ondelete='CASCADE'),
-                         nullable=False)
-
     # Project ID -- (ForeignKey to Project)
-    project_id = db.Column(db.Integer,
-                           db.ForeignKey('project.id', ondelete='CASCADE'),
-                           nullable=False)
+    project_id = db.Column(
+        db.Integer,
+        db.ForeignKey('project.id', ondelete='CASCADE'),
+        nullable=False
+    )
 
     # Commit ID -- (ForeignKey to Commit) -- ID is hash
-    commit_id = db.Column(db.String(64),
-                          db.ForeignKey('commits.id', ondelete='CASCADE'),
-                          nullable=False)
+    commit_id = db.Column(
+        db.String(64),
+        db.ForeignKey('commits.id', ondelete='CASCADE'),
+        nullable=False
+    )
 
     # Deployment IP -- IP address of deployment instance
     deployment_ip = db.Column(db.String(64), nullable=False)
 
     def __str__(self):
-        return f'< Deployment IP={self.deployment_ip}/>'
+        return f'<Deployment IP={self.deployment_ip} />'
 
     @staticmethod
-    def is_deployed(pid, cid):
-        deployment = Deployment.query.filter_by(
-            project_id=pid, commit_id=cid).first()
-        return (deployment is not None)
+    def is_deployed(project_id, commit_id):
+        return Deployment.query.filter_by(
+            project_id=project_id,
+            commit_id=commit_id
+        ).first() is not None

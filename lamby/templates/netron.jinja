@@ -12,42 +12,77 @@
 
 {% block meta %}
 <meta name='type' content='Python' />
-<meta name='file' content='{{object_link}}' />
+<meta name='file' content='{{ object_link }}' />
 {% endblock %}
 
 {% block content %}
+
 {# Commits Drop Down #}
-<button class="uk-button uk-button-default" type="button">COMMITS   <span uk-icon="icon:  triangle-down"></span></button>
+<button class="uk-button uk-button-default uk-width-1-6" style="margin-bottom: 5px" type="button">
+    COMMITS <span uk-icon="icon: triangle-down"></span>
+</button>
+
 <div uk-dropdown>
     <ul class="uk-nav uk-dropdown-nav">
     {% for commit in commits %}
-        {% if commit.id == head_commit %}
-        <li><a href="/models/{{project_id}}/{{commit.id}}">HEAD: {{commit.id}}</a></li>
-        {% else %}
-        <li><a href="/models/{{project_id}}/{{commit.id}}">{{commit.id}}</a></li>
-        {% endif %}
+        <li>
+            <a href="/models/{{ project.id }}/{{ commit.id }}">
+                {% if commit.id == head_commit %}HEAD:{% endif %}
+                {{ commit.id|truncate(7, True, '') }}
+            </a>
+        </li>
     {% endfor %}
     </ul>
 </div>
-<p style="float: right; padding:10px; ">Current Commit: {{current_commit}}</p>
+<br />
 
-<p uk-margin>
-    {% if current_user.id == project_owner_id %}
-        <button class="uk-button uk-button-default" onclick="changeHead()" type="button">Change head</button>
-    {% endif %}
-</p>
+{% if current_user.id == project.owner_id %}
+    <button class="uk-button uk-button-default uk-width-1-6" onclick="changeHead()" style="margin-bottom: 5px" type="button">
+        Change head
+    </button>
+    <br />
+{% endif %}
+
+<button
+    class="uk-button uk-button-default uk-width-1-6"
+    onclick="{% if is_deployed %}deleteDeployment(){% else %}deployModel(){% endif %}"
+    type="button"
+>
+    {% if is_deployed %} UNDEPLOY {% else %} DEPLOY {% endif %}
+</button>
+
+<h4 class="uk-text-center">Current Commit: {{ commit_id|truncate(7, True, '') }}</h4>
 
 <script type="text/javascript">
     const changeHead = async () => {
         try {
-            const res = await fetch("{{ url_for('models.change_head', project_id=project_id, commit_id=current_commit) }}", {
+            const endpoint = "{{ url_for('models.change_head', project_id=project.id, commit_id=commit_id) }}";
+            const res = await fetch(endpoint, {
                 method: "POST",
                 body: {},
             });
             window.location.href = "{{ request.url }}";
         } catch (err) {
-            console.log(JSON.stringify(err, undefined, 2));
+            window.location.href = "{{ request.url }}";
         }
+    }
+
+    const deployModel = async () => {
+        const endpoint = "{{ url_for('models.deploy_model', project_id=project.id, commit_id=commit_id) }}";
+        const res = await fetch(endpoint, {
+            method: "POST",
+            body: {}
+        });
+        window.location.href = "{{ request.url }}";
+    }
+
+    const deleteDeployment = async () => {
+        const endpoint = "{{ url_for('models.undeploy_model', project_id=project.id, commit_id=commit_id) }}";
+        const res = await fetch(endpoint, {
+            method: "POST",
+            body: {}
+        });
+        window.location.href = "{{ request.url }}";
     }
 </script>
 
@@ -59,13 +94,11 @@
     </svg>
 </a>
 
-
-
 <div id="graph-container" style="overflow: scroll; width: 100%; height: 100%">
     <svg id="graph" class="graph" preserveaspectratio="xMidYMid meet" width="100%" height="100%"></svg>
 </div>
 
-<div id="toolbar" class="toolbar" style="position: absolute; top: 35px; left: 10px; display: none;">
+<div id="toolbar" class="toolbar" style="position: absolute; top: 50px; display: none;">
     <button id="model-properties-button" title="Model Properties">
         <svg class="icon" viewbox="0 0 100 100">
             <rect class="border" x="12" y="12" width="76" height="76" rx="16" ry="16" stroke-width="8"></rect>
@@ -108,7 +141,6 @@
     <div id="sidebar-content" class="sidebar-content">
     </div>
 </div>
-
 
 {# Netron JS requirements #}
 <script type="text/javascript" src="{{ url_for('static', filename='netron/d3.min.js') }}"></script>

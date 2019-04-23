@@ -5,13 +5,14 @@ from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from lamby.database import db
-from lamby.forms.deployment import CreateDeploymentForm
 from lamby.filestore import fs
-from lamby.forms.projects import DeleteProjectForm, EditReadmeForm
+from lamby.forms.projects import (DeleteProjectForm, EditMembersForm,
+                                  EditReadmeForm)
 from lamby.models.commit_attr import CommitAttr
+from lamby.models.deployment import Deployment
 from lamby.models.meta import Meta
 from lamby.models.project import Project
-from lamby.models.deployment import Deployment
+from lamby.models.user import User
 
 projects_blueprint = Blueprint('projects', __name__)
 
@@ -32,24 +33,32 @@ def project(project_id):
     model_table_data = [{
         'filename': commit.filename,
         'message': commit.message,
-        'timestamp': time.strftime('%Y-%m-%d',
-                                   time.localtime(commit.timestamp)),
         'link': f'/models/{project.id}/{commit.id}',
         'commit_id': commit.id,
-        'is_deployed': Deployment.is_deployed(project_id, commit.id)
-    }for commit in Meta.get_latest_commits(project.id)]
+        'is_deployed': Deployment.is_deployed(project_id, commit.id),
+        'timestamp': time.strftime(
+            '%Y-%m-%d',
+            time.localtime(commit.timestamp)
+        )
+    } for commit in Meta.get_latest_commits(project.id)]
 
     markdown = mistune.Markdown()
-    formatted_readme = markdown(project.readme)
+    member_emails = '\n'.join([member.email for member in project.members])
 
-    return render_template('project.jinja',
-                           project=project,
-                           model_table_data=model_table_data,
-                           formatted_readme=formatted_readme,
-                           edit_readme_form=EditReadmeForm(
-                               markdown=u'' + project.readme),
-                           delete_project_form=DeleteProjectForm(),
-                           create_deployment_form=CreateDeploymentForm())
+    context = {
+        'project': project,
+        'model_table_data': model_table_data,
+        'formatted_readme': markdown(project.readme),
+        'edit_readme_form': EditReadmeForm(markdown=u'' + project.readme),
+        'delete_project_form': DeleteProjectForm(),
+        'edit_members_form': EditMembersForm(members=member_emails),
+        'formatted_date_created': time.strftime(
+            '%Y-%m-%d',
+            time.localtime(project.date_created)
+        )
+    }
+
+    return render_template('project.jinja', **context)
 
 
 @projects_blueprint.route('/readme/<int:project_id>', methods=['POST'])
@@ -131,3 +140,55 @@ def handle_delete_project(project_id):
 
     flash('Something went wrong! Please try again later.', category='danger')
     return redirect(url_for('profile.index'))
+
+
+@projects_blueprint.route('/edit_members/<int:project_id>', methods=['POST'])
+@login_required
+def handle_members(project_id):
+    edit_members_form = EditMembersForm()
+
+    # When Save Changes button is clicked
+    if edit_members_form.validate_on_submit():
+        project = Project.query.get(project_id)
+
+        if project is None:
+            flash('No such project!', category='danger')
+            return redirect(url_for('profile.index'))
+
+        if current_user not in project.members:
+            flash(
+                'You do not have permission to add members to this project!',
+                category='danger'
+            )
+            return redirect(url_for('projects.project', project_id=project_id))
+
+        member_emails = edit_members_form.members.data.split('\n')
+
+        for email in member_emails:
+            user = User.query.filter_by(email=email.strip()).first()
+
+            if user is None:
+                flash(
+                    f'Cannot find user with email: {email}',
+                    category='danger'
+                )
+                return redirect(url_for('projects.project',
+                                        project_id=project_id))
+
+            if user not in project.members:
+                project.members.append(user)
+        try:
+            db.session.commit()
+            flash(
+                f'Successfully updated members for {project.title}',
+                category='success'
+            )
+            return redirect(url_for('projects.project',
+                                    project_id=project_id))
+        except Exception as e:
+            flash(
+                f'Error updating members for {project.title}:  {e}',
+                category='danger'
+            )
+            return redirect(url_for('projects.project',
+                                    project_id=project_id))

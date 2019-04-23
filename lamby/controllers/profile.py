@@ -14,13 +14,16 @@ profile_blueprint = Blueprint('profile', __name__)
 @profile_blueprint.route('/')
 @login_required
 def index():
-    return render_template('profile.jinja',
-                           owner=current_user,
-                           my_info_form=MyInfoForm(),
-                           my_api_key_form=MyApiKeyForm(),
-                           delete_account_form=DeleteAccountForm(),
-                           new_project_form=NewProjectForm(),
-                           focused_tab='projects')
+    context = {
+        'owner': current_user,
+        'my_info_form': MyInfoForm(),
+        'my_api_key_form': MyApiKeyForm(),
+        'delete_account_form': DeleteAccountForm(),
+        'new_project_form': NewProjectForm(),
+        'focused_tab': 'projects'
+    }
+
+    return render_template('profile.jinja', **context)
 
 
 @profile_blueprint.route('/my_info', methods=['POST'])
@@ -34,13 +37,16 @@ def handle_my_info_form():
         flash('The change to your account was successful.', category='success')
         return redirect(url_for('profile.index'))
 
-    return render_template('profile.jinja',
-                           owner=current_user,
-                           my_info_form=my_info_form,
-                           my_api_key_form=MyApiKeyForm(),
-                           delete_account_form=DeleteAccountForm(),
-                           new_project_form=NewProjectForm(),
-                           focused_tab='info')
+    context = {
+        'owner': current_user,
+        'my_info_form': MyInfoForm(),
+        'my_api_key_form': MyApiKeyForm(),
+        'delete_account_form': DeleteAccountForm(),
+        'new_project_form': NewProjectForm(),
+        'focused_tab': 'info'
+    }
+
+    return render_template('profile.jinja', **context)
 
 
 @profile_blueprint.route('/my_api_key', methods=['POST'])
@@ -66,13 +72,18 @@ def handle_delete_account():
 
     if delete_account_form.validate_on_submit():
         user = User.query.filter(User.id == current_user.id).one()
+
         for p in Project.query.filter(Project.owner_id == current_user.id):
             for c in Commit.query.filter(Commit.project_id == p.id):
                 db.session.delete(c)
+
         db.session.delete(user)
         db.session.commit()
-        flash('You have successfully deleted your account!',
-              category='success')
+
+        flash(
+            'You have successfully deleted your account!',
+            category='success'
+        )
         return redirect(url_for('auth.login'))
 
     # Attempted to generate a new api key, but something went wrong

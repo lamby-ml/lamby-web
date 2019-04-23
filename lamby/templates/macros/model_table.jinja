@@ -1,4 +1,4 @@
-{%  macro render_model_table(models, project, create_deployment_form) %}
+{%  macro render_model_table(models, project) %}
 <div class="uk-container">
     <input id="search_input" type="text" class="uk-width-1-4 uk-input uk-align-right" style="margin-bottom: 0px" placeholder="Search">
     <table id="model_data_table" class="uk-table uk-table-divider" style="width:100%">
@@ -7,7 +7,7 @@
                 <th>Model Name</th>
                 <th>Commit Message</th>
                 <th>Last Modified</th>
-                <th>Deployment Status</th>
+                <th>Deployments</th>
             </tr>
         </thead>
         <tbody>
@@ -15,22 +15,8 @@
             <tr>
                 <td><a href="{{model.link}}">{{ model.filename }}</a></td>
                 <td>{{ model.message }}</td>
-                <td>{{model.timestamp}}</td>
-                <td>
-                    {% if current_user.is_authenticated and project.owner_id==current_user.id and not model.is_deployed%}
-                    <form method='post'
-                     action='{{ url_for("deployment.create_new_deployment", project_id=project.id, commit_id=model.commit_id)}}'
-                     novalidate>
-                        {{ create_deployment_form.hidden_tag() }}
-                        {{ create_deployment_form.user_id(value=current_user.id)}}
-                        {{ create_deployment_form.submit(class_="uk-button" ) }}
-                     </form>
-                     {% elif current_user.is_authenticated and model.is_deployed %}
-                        <p>Status</p>
-                     {% else %}
-                        <p> Other user woooo </p>
-                     {% endif %}
-                </td>
+                <td>{{ model.timestamp }}</td>
+                <td>abc, def, ghi</td>
             </tr>
         {%- endfor %}
         </tbody>
