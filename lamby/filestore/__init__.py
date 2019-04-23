@@ -48,12 +48,12 @@ class Filestore(object):
         self.default_bucket_name = os.getenv('FLASK_ENV')
         self.default_bucket = self.client.Bucket(self.default_bucket_name)
 
-    def get_link(self, key):
+    def get_link(self, project_id, commit_id):
         return self.raw_client.generate_presigned_url(
             'get_object',
             Params={
                 'Bucket': self.default_bucket_name,
-                'Key': key
+                'Key': f'{project_id}/{commit_id}'
             },
             ExpiresIn=100)
 

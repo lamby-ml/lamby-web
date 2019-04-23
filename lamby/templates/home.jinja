@@ -7,9 +7,9 @@
 {% block content %}
 
 {% if scope == "" %}
-<h3 class="uk-text-center">Popular Projects</h3>
+    <h3 class="uk-text-center">Popular Projects</h3>
 {% else %}
-<h3 class="uk-text-center">{{scope}}'s Projects</h3>
+    <h3 class="uk-text-center">{{scope}}'s Projects</h3>
 {% endif %}
 {{ render_projects(projects) }}
 

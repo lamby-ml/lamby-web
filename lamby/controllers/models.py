@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, jsonify
+from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import login_required
 
 from lamby.database import db
@@ -12,19 +12,35 @@ models_blueprint = Blueprint('models', __name__)
 
 @models_blueprint.route('/<string:project_id>/<string:commit_id>')
 def model(project_id, commit_id):
-    project_owner_id = Project.query.filter_by(id=project_id).first().owner.id
-    commit = Commit.query.filter_by(id=commit_id)
-    meta_head = Meta.query.filter_by(project_id=project_id,
-                                     filename=commit[0].filename).first().head
-    return render_template(
-        'netron.jinja',
-        object_link=fs.get_link(f'{project_id}/{commit_id}'),
-        commits=Commit.query.filter_by(
-            project_id=project_id, filename=commit[0].filename),
+    project = Project.query.get(project_id)
+
+    if project is None:
+        flash('That project does not exist!', category='danger')
+        return redirect(url_for('projects.index'))
+
+    commit = Commit.query.get(commit_id)
+
+    if commit is None:
+        flash('That commit does not exist!', category='danger')
+        return redirect(url_for('projects.index'))
+
+    meta = Meta.query.filter_by(
         project_id=project_id,
-        project_owner_id=project_owner_id,
-        current_commit=commit_id,
-        head_commit=meta_head)
+        filename=commit.filename
+    ).first()
+
+    context = {
+        'project': project,
+        'commit_id': commit_id,
+        'commits': Commit.query.filter_by(
+            project_id=project.id,
+            filename=commit.filename
+        ),
+        'head': meta.head,
+        'object_link': fs.get_link(project_id, commit_id),
+    }
+
+    return render_template('netron.jinja', **context)
 
 
 @models_blueprint.route('change_head/<int:project_id>/<string:commit_id>',
@@ -47,8 +63,10 @@ def change_head(project_id, commit_id):
         meta.head = commit.id
         try:
             db.session.commit()
-            flash('You have successfully reset the head',
-                  category='success')
+            flash(
+                'You have successfully reset the head',
+                category='success'
+            )
         except Exception as e:
             flash('There was an error:', e)
             return jsonify({'message': 'fail'}), 400

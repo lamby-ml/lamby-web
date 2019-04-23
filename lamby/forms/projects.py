@@ -10,3 +10,8 @@ class DeleteProjectForm(BaseForm):
 class EditReadmeForm(BaseForm):
     markdown = TextAreaField()
     submit = SubmitField('Confirm Changes')
+
+
+class EditMembersForm(BaseForm):
+    members = TextAreaField()
+    submit = SubmitField('Save Changes')

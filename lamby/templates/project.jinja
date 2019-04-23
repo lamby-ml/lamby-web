@@ -71,11 +71,22 @@
         <dd>{{ project.description }}</dd>
         <dt>Project Owner</dt>
         <dd>{{ project.owner.email }}</dd>
+        <dt>Date Created</dt>
+        <dd>{{ formatted_date_created }}</dd>
+
         <dt>Project Members</dt>
         <dd>
-        {% for name in project.members %}
-            {{ name.email }} <br>
-        {% endfor %}
+        <form method="post" action="{{ url_for('projects.handle_members', project_id=project.id) }}">
+          {{ edit_members_form.hidden_tag() }}
+          {{
+            edit_members_form.members(
+              class_="uk-align uk-textarea uk-form-medium",
+              rows=project.members|length,
+              readonly=current_user not in project.members
+            )
+          }}
+          {{ edit_members_form.submit(class_="uk-button uk-button-default uk-margin-small-bottom uk-align-right") }}
+        </form>
     </dl>
   </div>
 </div>
