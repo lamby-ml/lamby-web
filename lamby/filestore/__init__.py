@@ -35,17 +35,20 @@ class Filestore(object):
             aws_access_key_id=app.config['MINIO_ACCESS_KEY'],
             aws_secret_access_key=app.config['MINIO_SECRET_KEY'],
             config=Config(signature_version='s3v4'),
-            region_name='us-east-1')
+            region_name='us-east-1'
+        )
         self.raw_client = boto3.client(
             's3',
             endpoint_url=app.config['MINIO_SERVER_URI'],
             aws_access_key_id=app.config['MINIO_ACCESS_KEY'],
             aws_secret_access_key=app.config['MINIO_SECRET_KEY'],
             config=Config(signature_version='s3v4'),
-            region_name='us-east-1')
-        self.create_default_bucket()
+            region_name='us-east-1'
+        )
+
         # The name of the bucket is just the current environment (ie. testing)
         self.default_bucket_name = os.getenv('FLASK_ENV')
+        self.create_default_bucket()
         self.default_bucket = self.client.Bucket(self.default_bucket_name)
 
     def get_link(self, project_id, commit_id):
@@ -59,7 +62,7 @@ class Filestore(object):
 
     def create_default_bucket(self):
         try:
-            self.client.create_bucket(Bucket=os.getenv('FLASK_ENV'))
+            self.raw_client.create_bucket(Bucket=self.default_bucket_name)
         except ClientError as e:
             error_code = e.response['Error']['Code']
             if error_code != 'BucketAlreadyOwnedByYou' and \
