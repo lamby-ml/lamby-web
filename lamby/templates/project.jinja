@@ -27,7 +27,7 @@
     </div>
 
     {# Enable README editing if the current user owns the project #}
-    {% if current_user.is_authenticated and (project.owner_id == current_user.id or current_user in project.members)%}
+    {% if current_user.is_authenticated and current_user in project.members %}
     <button
         class="uk-button uk-button-default uk-margin-small-right uk-align-right uk-margin-top"
         type="button"
