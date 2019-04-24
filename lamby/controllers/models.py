@@ -134,15 +134,16 @@ def deploy_model(project_id, commit_id):
 def undeploy_model(project_id, commit_id):
     project = Project.query.get(project_id)
 
-    if current_user.id != project.owner_id:
-        flash('Invalid user credential privilege!'
-              + 'Unable to delete deployment instance.',
-              category='danger')
-        return jsonify({'message': 'invalid user'})
-
     if project is None:
         flash('No such project!', category='danger')
-        return jsonify({'message': 'invalid project'})
+        return jsonify({'message': 'invalid project'}), 404
+
+    if current_user.id != project.owner_id:
+        flash(
+            'Only the project owner can perform that action!',
+            category='danger'
+        )
+        return jsonify({'message': 'invalid user'}), 401
 
     commit = Commit.query.get(commit_id)
 
@@ -161,6 +162,7 @@ def undeploy_model(project_id, commit_id):
 
     # TODO: make call to delete droplet here
     print('deleting deployment instance...')
+
     db.session.delete(deploy)
     db.session.commit()
 
