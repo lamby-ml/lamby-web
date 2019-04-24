@@ -44,7 +44,7 @@ def deploy_model(commit_id):
     return jsonify(response), 400
 
 
-def create_droplet(deployment_name, model_uri):
+def create_droplet(deployment_name, model_uri, commit_id):
     payload = {
         'name': deployment_name,
         'region':
@@ -60,6 +60,8 @@ def create_droplet(deployment_name, model_uri):
               - docker pull lambyml/lamby-deploy:latest
               - docker run --name lamby-deploy -p 80:3000 \
                     -e ONNX_MODEL_URI={model_uri} \
+                    -e ONNX_COMMIT_ID={commit_id} \
+                    -e NODE_ENV=production \
                     lambyml/lamby-deploy:latest
             '''
     }
