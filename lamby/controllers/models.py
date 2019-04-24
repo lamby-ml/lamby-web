@@ -83,7 +83,7 @@ def change_head(project_id, commit_id):
     try:
         db.session.commit()
         flash(
-            'You have successfully reset the head',
+            'You have successfully changed the head',
             category='success'
         )
     except Exception as e:
