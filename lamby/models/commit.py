@@ -13,7 +13,7 @@ class Commit(db.Model):
     # Fields
     # -------------------------------------------------------------------------
 
-    # ID -- (PrimaryKey)
+    # ID -- (PrimaryKey) -- Commit Hash
     id = db.Column(db.String(64), primary_key=True)
 
     # PROJECT_ID -- (ForeignKey to Project)
@@ -38,6 +38,11 @@ class Commit(db.Model):
     # -------------------------------------------------------------------------
     # Relationships
     # -------------------------------------------------------------------------
+
+    # DEPLOYMENT (Commit one-to-one Deployment)
+    # -----------------------------------------
+    # Represents the deployment relevant to each commit
+    deployment = db.relationship('Deployment', backref='commit', uselist=False)
 
     # ATTRIBUTES (Commit one-to-many CommitAttr)
     # -------------------------------------------

@@ -1,6 +1,7 @@
 {% extends "helpers/base.jinja" %}
 
 {% from 'macros/projects.jinja' import render_projects with context %}
+{% from 'macros/deployments.jinja' import render_deployments with context %}
 
 {% block title %}Profile{% endblock %}
 
@@ -18,6 +19,7 @@
   <ul class="uk-tab" uk-switcher>
       {% if focused_tab == 'projects' %}
           <li class="uk-active"><a href="#">Projects</a></li>
+          <li><a href="#">Deployments</a></li>
           <li><a href="#">My Info</a></li>
       {% else %}
           <li><a href="#">Projects</a></li>
@@ -50,6 +52,14 @@
                   </form>
               </div>
           </div>
+      </li>
+
+      {# Deployments Tab #}
+      <li>
+        {% for project in current_user.owned_projects %}
+            <h4 class="uk-text-center">{{ project.title }}'s Deployed Models</h4>
+            {{ render_deployments(project.deployments) }}
+        {% endfor %}
       </li>
 
       {# My Info Tab #}

@@ -43,12 +43,14 @@ class Project(db.Model):
     # -------------------------------------------------------------------------
 
     # COMMITS -- (Project one-to-many Commit)
-    # --------------------------------------
+    # ---------------------------------------
     # Represents all of the commits for each project
     commits = db.relationship('Commit', backref='project', lazy=True)
 
-    def get_member_emails(self):
-        return [member.email for member in self.members]
+    # DEPLOYMENTS -- (Project one-to-many Deployment)
+    # -----------------------------------------------
+    # Represents all of the deployed commits for each project
+    deployments = db.relationship('Deployment', backref='project', lazy=True)
 
     def __str__(self):
         return f'<Project title={self.title} description={self.description} />'

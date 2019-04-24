@@ -9,6 +9,7 @@ from lamby.filestore import fs
 from lamby.forms.projects import (DeleteProjectForm, EditMembersForm,
                                   EditReadmeForm)
 from lamby.models.commit_attr import CommitAttr
+from lamby.models.deployment import Deployment
 from lamby.models.meta import Meta
 from lamby.models.project import Project
 from lamby.models.user import User
@@ -33,6 +34,8 @@ def project(project_id):
         'filename': commit.filename,
         'message': commit.message,
         'link': f'/models/{project.id}/{commit.id}',
+        'commit_id': commit.id,
+        'is_deployed': Deployment.is_deployed(project_id, commit.id),
         'timestamp': time.strftime(
             '%Y-%m-%d',
             time.localtime(commit.timestamp)
