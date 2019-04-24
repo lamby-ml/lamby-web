@@ -8,6 +8,7 @@ flake8 = "*"
 autopep8 = "*"
 pytest-flask = "*"
 isort = "*"
+datetime = "*"
 
 [packages]
 flask = "*"
@@ -19,6 +20,7 @@ sqlalchemy = "*"
 boto3 = "*"
 psycopg2-binary = "*"
 mistune = "*"
+datetime = "*"
 
 [requires]
 python_version = "3.7"
