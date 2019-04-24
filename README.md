@@ -88,3 +88,8 @@ docker run --name lamby-web -p 5000:5000 -d \
     -e SQLALCHEMY_DATABASE_URI=$SQL_ALCHEMY_DATABASE_URI \
     lambyml/lamby-web:latest
 ```
+
+```bash
+# Use docker-compose
+ACCESS_KEY=<access_key> SECRET_KEY=<secret_key> docker-compose up
+```
