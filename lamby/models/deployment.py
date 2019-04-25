@@ -31,6 +31,9 @@ class Deployment(db.Model):
     # Deployment IP -- IP address of deployment instance
     deployment_ip = db.Column(db.String(64), nullable=False)
 
+    # Deployment Id -- ID of digital ocean droplet instance
+    droplet_id = db.Column(db.Integer, nullable=False)
+
     def __str__(self):
         return f'<Deployment IP={self.deployment_ip} />'
 

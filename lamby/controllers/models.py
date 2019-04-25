@@ -1,8 +1,10 @@
 import datetime as dt
 
+import requests
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
-from flask_login import login_required, current_user
+from flask_login import current_user, login_required
 
+from lamby.api.deploy import create_droplet, delete_droplet
 from lamby.database import db
 from lamby.filestore import fs
 from lamby.models.commit import Commit
@@ -124,13 +126,25 @@ def deploy_model(project_id, commit_id):
         return jsonify({'message': 'already deployed'})
 
     # create droplet and deploy here
-    print('deploying model...')
+    deployment_ip = ''
+    droplet_id = ''
+    try:
+        droplet_id, deployment_ip = create_droplet(
+            f'{project.id}-{commit.filename}-{commit.id[0:7]}'[0:63],
+            fs.get_link(project_id, commit_id),
+            commit_id
+        )
+    except requests.exceptions.Timeout:
+        return jsonify({'message': 'Droplet creation timed out.'})
+    except requests.exceptions.RequestException:
+        return jsonify({'message': 'Droplet creation error.'})
 
     # TODO: remove hardcoded ip
     deploy = Deployment(
         project_id=project_id,
         commit_id=commit_id,
-        deployment_ip='123.1.1.1'
+        deployment_ip=deployment_ip,
+        droplet_id=int(droplet_id)
     )
 
     db.session.add(deploy)
@@ -172,8 +186,12 @@ def undeploy_model(project_id, commit_id):
         flash('That commit is not currently deployed!', category='danger')
         return jsonify({'message': 'not deployed'})
 
-    # TODO: make call to delete droplet here
-    print('deleting deployment instance...')
+    try:
+        delete_droplet(deploy.droplet_id)
+    except requests.exceptions.Timeout:
+        return jsonify({'message': 'Droplet delete timed out.'})
+    except requests.exceptions.RequestException:
+        return jsonify({'message': 'Droplet delete error.'})
 
     db.session.delete(deploy)
     db.session.commit()
